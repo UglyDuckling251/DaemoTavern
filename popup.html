@@ -1,5 +1,10 @@
 <div id="daemoTavernPopup">
-    <h2>D&D 5e Character Sheet</h2>
+    <div class="character-header">
+        <h2 id="characterTitle" class="character-title-clickable" title="Click to edit name">Unnamed Character</h2>
+        <button id="saveCharacterBtn" class="menu_button save-character-btn">
+            <i class="fa-solid fa-floppy-disk"></i> Save Character
+        </button>
+    </div>
     
     <div class="character-sheet-container">
         <!-- left column basic info -->
@@ -7,11 +12,6 @@
             <!-- basic character info -->
             <div class="card">
                 <h3>Basic Information</h3>
-                <label>
-                    Character Name
-                    <input type="text" id="characterName" class="text_pole" placeholder="Enter name">
-                </label>
-                
                 <label>
                     Race
                     <select id="characterRace" class="text_pole">
@@ -56,13 +56,17 @@
                     </label>
                     <label>
                         AC
-                        <input type="number" id="characterAC" class="text_pole stat-input" value="10">
+                        <input type="number" id="characterAC" class="text_pole stat-input" readonly>
                     </label>
                     <label>
                         Speed
                         <input type="number" id="characterSpeed" class="text_pole stat-input" readonly>
                     </label>
                 </div>
+                <label>
+                    Proficiency Bonus
+                    <input type="text" id="proficiencyBonus" class="text_pole" readonly value="+2">
+                </label>
             </div>
             
             <!-- ability scores -->
@@ -73,37 +77,37 @@
                 <div class="ability-scores-grid">
                     <div class="ability-score">
                         <label>STR</label>
-                        <input type="number" id="abilitySTR" class="text_pole ability-input" min="8" max="15" value="8" data-ability="str">
+                        <input type="number" id="abilitySTR" class="text_pole ability-input" min="8" max="15" value="10" data-ability="str">
                         <div class="ability-modifier" id="modSTR">+0</div>
                         <div class="ability-total" id="totalSTR">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>DEX</label>
-                        <input type="number" id="abilityDEX" class="text_pole ability-input" min="8" max="15" value="8" data-ability="dex">
+                        <input type="number" id="abilityDEX" class="text_pole ability-input" min="8" max="15" value="10" data-ability="dex">
                         <div class="ability-modifier" id="modDEX">+0</div>
                         <div class="ability-total" id="totalDEX">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>CON</label>
-                        <input type="number" id="abilityCON" class="text_pole ability-input" min="8" max="15" value="8" data-ability="con">
+                        <input type="number" id="abilityCON" class="text_pole ability-input" min="8" max="15" value="10" data-ability="con">
                         <div class="ability-modifier" id="modCON">+0</div>
                         <div class="ability-total" id="totalCON">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>INT</label>
-                        <input type="number" id="abilityINT" class="text_pole ability-input" min="8" max="15" value="8" data-ability="int">
+                        <input type="number" id="abilityINT" class="text_pole ability-input" min="8" max="15" value="10" data-ability="int">
                         <div class="ability-modifier" id="modINT">+0</div>
                         <div class="ability-total" id="totalINT">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>WIS</label>
-                        <input type="number" id="abilityWIS" class="text_pole ability-input" min="8" max="15" value="8" data-ability="wis">
+                        <input type="number" id="abilityWIS" class="text_pole ability-input" min="8" max="15" value="10" data-ability="wis">
                         <div class="ability-modifier" id="modWIS">+0</div>
                         <div class="ability-total" id="totalWIS">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>CHA</label>
-                        <input type="number" id="abilityCHA" class="text_pole ability-input" min="8" max="15" value="8" data-ability="cha">
+                        <input type="number" id="abilityCHA" class="text_pole ability-input" min="8" max="15" value="10" data-ability="cha">
                         <div class="ability-modifier" id="modCHA">+0</div>
                         <div class="ability-total" id="totalCHA">Base: 8</div>
                     </div>
@@ -113,6 +117,13 @@
             <!-- equipment -->
             <div class="card">
                 <h3>Equipment</h3>
+                <label>
+                    Armor
+                    <select id="characterArmor" class="text_pole">
+                        <option value="">Select Armor</option>
+                    </select>
+                </label>
+                
                 <label>
                     Weapon
                     <select id="characterWeapon" class="text_pole">
@@ -143,6 +154,13 @@
                 <h3>Class Features</h3>
                 <div id="classFeatures" class="features-list">
                     <p class="subtle">Select a class to see features</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Proficiencies</h3>
+                <div id="proficienciesDisplay" class="features-list">
+                    <p class="subtle">Select a class</p>
                 </div>
             </div>
             

@@ -271,9 +271,99 @@ const INSTRUMENTS = [
     'Lyre', 'Horn', 'Pan Flute', 'Shawm', 'Viol'
 ];
 
-// ability score point buy system (27 points)
+// ability score point buy system (starts at 10, 27 points available)
 const ABILITY_POINT_COSTS = {
-    8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9
+    8: -2, 9: -1, 10: 0, 11: 1, 12: 2, 13: 3, 14: 5, 15: 7
 };
 
 const ABILITY_POINT_BUDGET = 27;
+
+// proficiency bonus by level
+const PROFICIENCY_BONUS = {
+    1: 2, 2: 2, 3: 2, 4: 2,
+    5: 3, 6: 3, 7: 3, 8: 3,
+    9: 4, 10: 4, 11: 4, 12: 4,
+    13: 5, 14: 5, 15: 5, 16: 5,
+    17: 6, 18: 6, 19: 6, 20: 6
+};
+
+// armor types
+const ARMOR = {
+    none: { name: 'No Armor', type: 'none', ac: 10, dexBonus: 'full', stealthDisadvantage: false },
+    padded: { name: 'Padded', type: 'light', ac: 11, dexBonus: 'full', stealthDisadvantage: true },
+    leather: { name: 'Leather', type: 'light', ac: 11, dexBonus: 'full', stealthDisadvantage: false },
+    studdedLeather: { name: 'Studded Leather', type: 'light', ac: 12, dexBonus: 'full', stealthDisadvantage: false },
+    hide: { name: 'Hide', type: 'medium', ac: 12, dexBonus: 2, stealthDisadvantage: false },
+    chainShirt: { name: 'Chain Shirt', type: 'medium', ac: 13, dexBonus: 2, stealthDisadvantage: false },
+    scaleMail: { name: 'Scale Mail', type: 'medium', ac: 14, dexBonus: 2, stealthDisadvantage: true },
+    breastplate: { name: 'Breastplate', type: 'medium', ac: 14, dexBonus: 2, stealthDisadvantage: false },
+    halfPlate: { name: 'Half Plate', type: 'medium', ac: 15, dexBonus: 2, stealthDisadvantage: true },
+    ringMail: { name: 'Ring Mail', type: 'heavy', ac: 14, dexBonus: 0, stealthDisadvantage: true },
+    chainMail: { name: 'Chain Mail', type: 'heavy', ac: 16, dexBonus: 0, stealthDisadvantage: true },
+    splint: { name: 'Splint', type: 'heavy', ac: 17, dexBonus: 0, stealthDisadvantage: true },
+    plate: { name: 'Plate', type: 'heavy', ac: 18, dexBonus: 0, stealthDisadvantage: true }
+};
+
+// class proficiencies
+const CLASS_PROFICIENCIES = {
+    barbarian: {
+        armor: ['light', 'medium', 'shields'],
+        weapons: ['simple', 'martial'],
+        savingThrows: ['str', 'con']
+    },
+    bard: {
+        armor: ['light'],
+        weapons: ['simple', 'hand crossbow', 'longsword', 'rapier', 'shortsword'],
+        savingThrows: ['dex', 'cha']
+    },
+    cleric: {
+        armor: ['light', 'medium', 'shields'],
+        weapons: ['simple'],
+        savingThrows: ['wis', 'cha']
+    },
+    druid: {
+        armor: ['light', 'medium', 'shields'],
+        weapons: ['club', 'dagger', 'dart', 'javelin', 'mace', 'quarterstaff', 'scimitar', 'sickle', 'sling', 'spear'],
+        savingThrows: ['int', 'wis']
+    },
+    fighter: {
+        armor: ['light', 'medium', 'heavy', 'shields'],
+        weapons: ['simple', 'martial'],
+        savingThrows: ['str', 'con']
+    },
+    monk: {
+        armor: [],
+        weapons: ['simple', 'shortsword'],
+        savingThrows: ['str', 'dex']
+    },
+    paladin: {
+        armor: ['light', 'medium', 'heavy', 'shields'],
+        weapons: ['simple', 'martial'],
+        savingThrows: ['wis', 'cha']
+    },
+    ranger: {
+        armor: ['light', 'medium', 'shields'],
+        weapons: ['simple', 'martial'],
+        savingThrows: ['str', 'dex']
+    },
+    rogue: {
+        armor: ['light'],
+        weapons: ['simple', 'hand crossbow', 'longsword', 'rapier', 'shortsword'],
+        savingThrows: ['dex', 'int']
+    },
+    sorcerer: {
+        armor: [],
+        weapons: ['dagger', 'dart', 'sling', 'quarterstaff', 'light crossbow'],
+        savingThrows: ['con', 'cha']
+    },
+    warlock: {
+        armor: ['light'],
+        weapons: ['simple'],
+        savingThrows: ['wis', 'cha']
+    },
+    wizard: {
+        armor: [],
+        weapons: ['dagger', 'dart', 'sling', 'quarterstaff', 'light crossbow'],
+        savingThrows: ['int', 'wis']
+    }
+};

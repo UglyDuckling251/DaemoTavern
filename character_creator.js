@@ -1,17 +1,18 @@
 // d&d 5e character creation logic
 
 let characterData = {
-    name: '',
+    name: 'Unnamed Character',
     race: '',
     class: '',
     level: 1,
     background: '',
     alignment: '',
-    abilityScores: { str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8 },
+    abilityScores: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
     hp: 0,
     ac: 10,
     speed: 30,
     weapon: '',
+    armor: '',
     instrument: '',
     selectedCantrips: [],
     selectedSpells: []
@@ -65,10 +66,10 @@ function UpdateAbilityScoreDisplays() {
     });
     
     pointsSpent = CalculatePointsSpent();
-    const remaining = ABILITY_POINT_BUDGET - pointsSpent;
+    const remaining = Math.max(0, ABILITY_POINT_BUDGET - pointsSpent);
     $('#pointsRemaining').text(remaining);
     
-    if (remaining < 0) {
+    if (remaining === 0 && pointsSpent > ABILITY_POINT_BUDGET) {
         $('#pointBudget').addClass('over-budget');
     } else {
         $('#pointBudget').removeClass('over-budget');
@@ -96,15 +97,51 @@ function CalculateHP() {
     return Math.max(1, hp);
 }
 
+// calculate ac based on armor and dex
+function CalculateAC() {
+    if (!characterData.armor || !ARMOR[characterData.armor]) {
+        return 10 + CalculateModifier(GetTotalAbilityScore('dex'));
+    }
+    
+    const armorData = ARMOR[characterData.armor];
+    const dexMod = CalculateModifier(GetTotalAbilityScore('dex'));
+    
+    let ac = armorData.ac;
+    
+    if (armorData.dexBonus === 'full') {
+        ac += dexMod;
+    } else if (typeof armorData.dexBonus === 'number') {
+        ac += Math.min(dexMod, armorData.dexBonus);
+    }
+    
+    // check proficiency
+    if (!IsArmorProficient(characterData.armor)) {
+        // no penalty to ac but penalties applied elsewhere
+    }
+    
+    return ac;
+}
+
+// get proficiency bonus by level
+function GetProficiencyBonus() {
+    return PROFICIENCY_BONUS[characterData.level] || 2;
+}
+
 // update combat stats
 function UpdateCombatStats() {
     characterData.hp = CalculateHP();
     $('#characterHP').val(characterData.hp);
     
+    characterData.ac = CalculateAC();
+    $('#characterAC').val(characterData.ac);
+    
     if (characterData.race && DND_RACES[characterData.race]) {
         characterData.speed = DND_RACES[characterData.race].speed;
         $('#characterSpeed').val(characterData.speed);
     }
+    
+    const profBonus = GetProficiencyBonus();
+    $('#proficiencyBonus').val(`+${profBonus}`);
 }
 
 // populate race features
@@ -128,6 +165,90 @@ function UpdateRacialFeatures() {
     featuresDiv.html(html);
 }
 
+// check if proficient with armor
+function IsArmorProficient(armorKey) {
+    if (!characterData.class || !armorKey || armorKey === 'none') return true;
+    if (!CLASS_PROFICIENCIES[characterData.class]) return false;
+    if (!ARMOR[armorKey]) return false;
+    
+    const proficiencies = CLASS_PROFICIENCIES[characterData.class].armor;
+    const armorType = ARMOR[armorKey].type;
+    
+    return proficiencies.includes(armorType);
+}
+
+// check if proficient with weapon
+function IsWeaponProficient(weaponName) {
+    if (!characterData.class || !weaponName) return true;
+    if (!CLASS_PROFICIENCIES[characterData.class]) return false;
+    
+    const proficiencies = CLASS_PROFICIENCIES[characterData.class].weapons;
+    
+    // check if proficient with weapon category
+    if (proficiencies.includes('simple')) {
+        if (WEAPONS.simple.includes(weaponName)) return true;
+    }
+    if (proficiencies.includes('martial')) {
+        if (WEAPONS.martial.includes(weaponName)) return true;
+    }
+    
+    // check specific weapon proficiency
+    const weaponLower = weaponName.toLowerCase();
+    for (let prof of proficiencies) {
+        if (prof.toLowerCase() === weaponLower) return true;
+    }
+    
+    return false;
+}
+
+// update proficiencies display
+function UpdateProficienciesDisplay() {
+    if (!characterData.class || !CLASS_PROFICIENCIES[characterData.class]) {
+        $('#proficienciesDisplay').html('<p class="subtle">Select a class</p>');
+        return;
+    }
+    
+    const prof = CLASS_PROFICIENCIES[characterData.class];
+    let html = '<div class=\"proficiency-section\">';
+    
+    // armor proficiencies
+    html += '<h5>Armor</h5><p>';
+    if (prof.armor.length === 0) {
+        html += 'None';
+    } else {
+        html += prof.armor.join(', ');
+    }
+    html += '</p>';
+    
+    // weapon proficiencies
+    html += '<h5>Weapons</h5><p>';
+    if (prof.weapons.length === 0) {
+        html += 'None';
+    } else {
+        html += prof.weapons.join(', ');
+    }
+    html += '</p>';
+    
+    html += '</div>';
+    
+    // check current equipment
+    let warnings = [];
+    
+    if (characterData.armor && !IsArmorProficient(characterData.armor)) {
+        warnings.push(`<span class="warning">⚠️ Not proficient with ${ARMOR[characterData.armor].name}: Disadvantage on ability checks, saving throws, and attack rolls using STR or DEX</span>`);
+    }
+    
+    if (characterData.weapon && !IsWeaponProficient(characterData.weapon)) {
+        warnings.push(`<span class="warning">⚠️ Not proficient with ${characterData.weapon}: No proficiency bonus to attack rolls</span>`);
+    }
+    
+    if (warnings.length > 0) {
+        html += '<div class="proficiency-warnings">' + warnings.join('<br>') + '</div>';
+    }
+    
+    $('#proficienciesDisplay').html(html);
+}
+
 // populate class features
 function UpdateClassFeatures() {
     const featuresDiv = $('#classFeatures');
@@ -146,6 +267,7 @@ function UpdateClassFeatures() {
     html += '</ul>';
     
     featuresDiv.html(html);
+    UpdateProficienciesDisplay();
 }
 
 // get spell slots for current class and level
@@ -496,16 +618,41 @@ function InitializeCharacterCreator(extensionFolderPath) {
         alignmentSelect.append(`<option value="${align}">${align}</option>`);
     });
     
+    // populate armor dropdown
+    const armorSelect = $('#characterArmor');
+    armorSelect.append('<option value=\"none\">No Armor</option>');
+    armorSelect.append('<optgroup label=\"Light Armor\">');
+    for (let key in ARMOR) {
+        if (ARMOR[key].type === 'light') {
+            armorSelect.append(`<option value=\"${key}\">${ARMOR[key].name}</option>`);
+        }
+    }
+    armorSelect.append('</optgroup>');
+    armorSelect.append('<optgroup label=\"Medium Armor\">');
+    for (let key in ARMOR) {
+        if (ARMOR[key].type === 'medium') {
+            armorSelect.append(`<option value=\"${key}\">${ARMOR[key].name}</option>`);
+        }
+    }
+    armorSelect.append('</optgroup>');
+    armorSelect.append('<optgroup label=\"Heavy Armor\">');
+    for (let key in ARMOR) {
+        if (ARMOR[key].type === 'heavy') {
+            armorSelect.append(`<option value=\"${key}\">${ARMOR[key].name}</option>`);
+        }
+    }
+    armorSelect.append('</optgroup>');
+    
     // populate weapons dropdown
     const weaponSelect = $('#characterWeapon');
-    weaponSelect.append('<optgroup label="Simple Weapons">');
+    weaponSelect.append('<optgroup label=\"Simple Weapons\">');
     WEAPONS.simple.forEach(weapon => {
-        weaponSelect.append(`<option value="${weapon}">${weapon}</option>`);
+        weaponSelect.append(`<option value=\"${weapon}\">${weapon}</option>`);
     });
     weaponSelect.append('</optgroup>');
-    weaponSelect.append('<optgroup label="Martial Weapons">');
+    weaponSelect.append('<optgroup label=\"Martial Weapons\">');
     WEAPONS.martial.forEach(weapon => {
-        weaponSelect.append(`<option value="${weapon}">${weapon}</option>`);
+        weaponSelect.append(`<option value=\"${weapon}\">${weapon}</option>`);
     });
     weaponSelect.append('</optgroup>');
     
@@ -564,14 +711,17 @@ function InitializeCharacterCreator(extensionFolderPath) {
     
     $('#characterWeapon').on('change', function() {
         characterData.weapon = $(this).val();
+        UpdateProficienciesDisplay();
+    });
+    
+    $('#characterArmor').on('change', function() {
+        characterData.armor = $(this).val();
+        UpdateCombatStats();
+        UpdateProficienciesDisplay();
     });
     
     $('#characterInstrument').on('change', function() {
         characterData.instrument = $(this).val();
-    });
-    
-    $('#characterAC').on('input', function() {
-        characterData.ac = parseInt($(this).val()) || 10;
     });
     
     // ability score inputs
@@ -582,8 +732,17 @@ function InitializeCharacterCreator(extensionFolderPath) {
         if (value < 8) value = 8;
         if (value > 15) value = 15;
         
+        // check if change would exceed budget
+        const oldValue = characterData.abilityScores[ability];
         characterData.abilityScores[ability] = value;
-        $(this).val(value);
+        
+        const newSpent = CalculatePointsSpent();
+        if (newSpent > ABILITY_POINT_BUDGET) {
+            // revert change
+            characterData.abilityScores[ability] = oldValue;
+            $(this).val(oldValue);
+            return;
+        }
         
         UpdateAbilityScoreDisplays();
         UpdateCombatStats();
@@ -627,7 +786,110 @@ function InitializeCharacterCreator(extensionFolderPath) {
         }
     });
     
+    // save character button
+    $('#saveCharacterBtn').on('click', SaveCharacter);
+    
+    // make character title editable
+    MakeCharacterTitleEditable();
+    
+    // load character on init
+    LoadCharacter();
+    
     // initialize displays
     UpdateAbilityScoreDisplays();
     UpdateCombatStats();
+}
+
+// save character to storage
+function SaveCharacter() {
+    const context = SillyTavern.getContext();
+    const extensionName = 'DaemoTavern';
+    
+    if (!context.extensionSettings[extensionName]) {
+        context.extensionSettings[extensionName] = {};
+    }
+    
+    context.extensionSettings[extensionName].characterData = JSON.parse(JSON.stringify(characterData));
+    context.saveSettingsDebounced();
+    
+    // update character name in title
+    UpdateCharacterTitle();
+    
+    // show save confirmation
+    toastr.success('Character saved successfully!', 'Daemo Tavern');
+    console.log('Character saved:', characterData);
+}
+
+// load character from storage
+function LoadCharacter() {
+    const context = SillyTavern.getContext();
+    const extensionName = 'DaemoTavern';
+    
+    if (context.extensionSettings[extensionName]?.characterData) {
+        const savedData = context.extensionSettings[extensionName].characterData;
+        
+        // restore character data
+        Object.assign(characterData, savedData);
+        
+        // restore ui values
+        $('#characterRace').val(characterData.race);
+        $('#characterClass').val(characterData.class);
+        $('#characterLevel').val(characterData.level);
+        $('#characterBackground').val(characterData.background);
+        $('#characterAlignment').val(characterData.alignment);
+        $('#characterWeapon').val(characterData.weapon);
+        $('#characterArmor').val(characterData.armor);
+        $('#characterInstrument').val(characterData.instrument);
+        
+        // restore ability scores
+        for (let ability in characterData.abilityScores) {
+            $(`#ability${ability.toUpperCase()}`).val(characterData.abilityScores[ability]);
+        }
+        
+        // update displays
+        UpdateCharacterTitle();
+        UpdateAbilityScoreDisplays();
+        UpdateCombatStats();
+        UpdateRacialFeatures();
+        UpdateClassFeatures();
+        UpdateSpellcastingSection();
+        
+        // show instrument section if bard
+        if (characterData.class === 'bard') {
+            $('#instrumentSection').show();
+        }
+        
+        console.log('Character loaded:', characterData);
+    }
+}
+
+// update character title
+function UpdateCharacterTitle() {
+    const name = characterData.name || 'Unnamed Character';
+    $('#characterTitle').text(name);
+}
+
+// editable character name in title
+function MakeCharacterTitleEditable() {
+    $('#characterTitle').on('click', function() {
+        const currentName = $(this).text();
+        const input = $('<input type="text" class="character-title-edit">').val(currentName);
+        
+        $(this).replaceWith(input);
+        input.focus().select();
+        
+        input.on('blur', function() {
+            const newName = $(this).val().trim() || 'Unnamed Character';
+            characterData.name = newName;
+            const newTitle = $('<h2 id="characterTitle" class="character-title-clickable"></h2>').text(newName);
+            $(this).replaceWith(newTitle);
+            MakeCharacterTitleEditable();
+        });
+        
+        input.on('keypress', function(e) {
+            if (e.which === 13) {
+                $(this).blur();
+            }
+        });
+    });
 }
