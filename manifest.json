@@ -1,12 +1,12 @@
 {
     "display_name": "Daemo Tavern",
-    "loading_order": 5,
+    "loading_order": 1,
     "requires": [],
     "optional": [],
     "js": "index.js",
     "css": "style.css",
     "author": "UglyDuckling251",
     "version": "0.1.5",
-    "homePage": "https://github.com/UglyDuckling251/DaemoTavern",
+    "homePage": "https://github.com/UglyDuckling251/Extension-DaemoTavern",
     "auto_update": true
 }
