@@ -1,0 +1,13 @@
+{
+    "display_name": "Daemo Tavern",
+    "loading_order": 1,
+    "requires": [],
+    "optional": [],
+    "dependencies": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "UglyDuckling251",
+    "version": "1.0.0",
+    "homePage": "https://github.com/UglyDuckling251/DaemoTavern",
+    "auto_update": false
+}
