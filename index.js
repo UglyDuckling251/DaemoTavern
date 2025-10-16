@@ -128,6 +128,105 @@
         return GenerateStatsTextFromProfile(profile);
     }
     
+    // get character profile for display
+    function GetCharacterProfile(characterId) {
+        if (!characterId) return null;
+        
+        const profileKey = `daemonProfile_char_${characterId}`;
+        return context.extensionSettings[extensionName]?.profiles?.[profileKey] || null;
+    }
+    
+    // create stat badges html
+    function CreateStatBadges(profile) {
+        if (!profile) return '';
+        
+        const hp = profile.hp || 0;
+        const ac = profile.ac || 10;
+        const speed = profile.speed || 30;
+        const level = profile.level || 1;
+        const className = profile.class ? (DND_CLASSES?.[profile.class]?.name || profile.class) : '';
+        const raceName = profile.race ? (DND_RACES?.[profile.race]?.name || profile.race) : '';
+        
+        return `<div class="daemo-stat-badges">
+            <span class="daemo-badge daemo-hp" title="Hit Points"><i class="fa-solid fa-heart"></i> ${hp}</span>
+            <span class="daemo-badge daemo-ac" title="Armor Class"><i class="fa-solid fa-shield"></i> ${ac}</span>
+            <span class="daemo-badge daemo-speed" title="Speed"><i class="fa-solid fa-person-running"></i> ${speed}</span>
+            <span class="daemo-badge daemo-info" title="Race / Class / Level">${raceName} ${className} ${level}</span>
+        </div>`;
+    }
+    
+    // inject stat badges into message headers
+    function InjectStatBadges() {
+        const characterId = context.characterId;
+        if (!characterId) return;
+        
+        const profile = GetCharacterProfile(characterId);
+        if (!profile) return;
+        
+        // find all character message headers without badges
+        $('.mes_block:not(.daemo-badges-added)').each(function() {
+            const $mesBlock = $(this);
+            
+            // check if this is a character message (not user)
+            if ($mesBlock.hasClass('last_mes') && !$mesBlock.find('.ch_name').length) {
+                return; // skip user messages
+            }
+            
+            // only add to character messages
+            const $chName = $mesBlock.find('.ch_name');
+            if ($chName.length > 0) {
+                // check if badges already exist
+                if (!$mesBlock.find('.daemo-stat-badges').length) {
+                    const badgesHtml = CreateStatBadges(profile);
+                    $chName.after(badgesHtml);
+                    $mesBlock.addClass('daemo-badges-added');
+                }
+            }
+        });
+    }
+    
+    // setup stat badge injection
+    function SetupStatBadges() {
+        // inject badges on initial load
+        setTimeout(() => {
+            InjectStatBadges();
+        }, 1000);
+        
+        // watch for new messages
+        const observer = new MutationObserver((mutations) => {
+            let shouldUpdate = false;
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length > 0) {
+                    shouldUpdate = true;
+                }
+            });
+            
+            if (shouldUpdate) {
+                InjectStatBadges();
+            }
+        });
+        
+        // observe chat container
+        const chatContainer = document.getElementById('chat');
+        if (chatContainer) {
+            observer.observe(chatContainer, {
+                childList: true,
+                subtree: true
+            });
+        }
+        
+        // re-inject on character switch
+        $(document).on('characterSelected', () => {
+            setTimeout(() => {
+                // remove old badges
+                $('.daemo-stat-badges').remove();
+                $('.mes_block').removeClass('daemo-badges-added');
+                // inject new badges
+                InjectStatBadges();
+            }, 100);
+        });
+    }
+    
     // setup prompt injection hook
     function SetupPromptInjection() {
         // register extension prompts
@@ -170,6 +269,7 @@
         await LoadCharacterCreatorScripts();
         await LoadPopupButton();
         SetupPromptInjection();
+        SetupStatBadges();
         
         console.log('DaemoTavern initialized successfully');
     }
