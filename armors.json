@@ -1,0 +1,93 @@
+{
+	"none": {
+		"name": "No Armor",
+		"type": "none",
+		"ac": 10,
+		"dexBonus": "full",
+		"stealthDisadvantage": false
+	},
+	"padded": {
+		"name": "Padded",
+		"type": "light",
+		"ac": 11,
+		"dexBonus": "full",
+		"stealthDisadvantage": true
+	},
+	"leather": {
+		"name": "Leather",
+		"type": "light",
+		"ac": 11,
+		"dexBonus": "full",
+		"stealthDisadvantage": false
+	},
+	"studdedLeather": {
+		"name": "Studded Leather",
+		"type": "light",
+		"ac": 12,
+		"dexBonus": "full",
+		"stealthDisadvantage": false
+	},
+	"hide": {
+		"name": "Hide",
+		"type": "medium",
+		"ac": 12,
+		"dexBonus": 2,
+		"stealthDisadvantage": false
+	},
+	"chainShirt": {
+		"name": "Chain Shirt",
+		"type": "medium",
+		"ac": 13,
+		"dexBonus": 2,
+		"stealthDisadvantage": false
+	},
+	"scaleMail": {
+		"name": "Scale Mail",
+		"type": "medium",
+		"ac": 14,
+		"dexBonus": 2,
+		"stealthDisadvantage": true
+	},
+	"breastplate": {
+		"name": "Breastplate",
+		"type": "medium",
+		"ac": 14,
+		"dexBonus": 2,
+		"stealthDisadvantage": false
+	},
+	"halfPlate": {
+		"name": "Half Plate",
+		"type": "medium",
+		"ac": 15,
+		"dexBonus": 2,
+		"stealthDisadvantage": true
+	},
+	"ringMail": {
+		"name": "Ring Mail",
+		"type": "heavy",
+		"ac": 14,
+		"dexBonus": 0,
+		"stealthDisadvantage": true
+	},
+	"chainMail": {
+		"name": "Chain Mail",
+		"type": "heavy",
+		"ac": 16,
+		"dexBonus": 0,
+		"stealthDisadvantage": true
+	},
+	"splint": {
+		"name": "Splint",
+		"type": "heavy",
+		"ac": 17,
+		"dexBonus": 0,
+		"stealthDisadvantage": true
+	},
+	"plate": {
+		"name": "Plate",
+		"type": "heavy",
+		"ac": 18,
+		"dexBonus": 0,
+		"stealthDisadvantage": true
+	}
+}

@@ -181,53 +181,7 @@
                         <!-- will be populated dynamically -->
                     </div>
                 </div>
-                
-                <!-- cantrips -->
-                <div class="spells-container">
-                    <h4>Cantrips <span id="cantripsKnown">(0/0)</span></h4>
-                    <div class="spell-selection-area">
-                        <select id="cantripSelector" class="text_pole" multiple size="5">
-                            <!-- populated from spells.json -->
-                        </select>
-                        <button id="addCantripBtn" class="menu_button">Add Cantrip</button>
-                    </div>
-                    <div id="selectedCantrips" class="selected-spells">
-                        <!-- selected cantrips will appear here -->
-                    </div>
-                </div>
-                
-                <!-- spells -->
-                <div class="spells-container">
-                    <h4>Spells Known <span id="spellsKnown">(0/0)</span></h4>
-                    <label>
-                        Filter by Spell Level
-                        <select id="spellLevelFilter" class="text_pole">
-                            <option value="all">All Levels</option>
-                            <option value="1">1st Level</option>
-                            <option value="2">2nd Level</option>
-                            <option value="3">3rd Level</option>
-                            <option value="4">4th Level</option>
-                            <option value="5">5th Level</option>
-                            <option value="6">6th Level</option>
-                            <option value="7">7th Level</option>
-                            <option value="8">8th Level</option>
-                            <option value="9">9th Level</option>
-                        </select>
-                    </label>
-                    <div class="spell-selection-area">
-                        <select id="spellSelector" class="text_pole" multiple size="8">
-                            <!-- populated from spells.json -->
-                        </select>
-                        <button id="addSpellBtn" class="menu_button">Add Spell</button>
-                    </div>
-                    <div id="selectedSpells" class="selected-spells">
-                        <!-- selected spells will appear here -->
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-    
-    <!-- spell tooltip -->
-    <div id="spellTooltip" class="spell-tooltip" style="display: none;"></div>
 </div>

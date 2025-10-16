@@ -1,0 +1,107 @@
+{
+	"barbarian": {
+		"name": "Barbarian",
+		"hitDice": 12,
+		"primaryAbility": ["str"],
+		"savingThrows": ["str", "con"],
+		"spellcaster": false,
+		"features": ["Rage", "Unarmored Defense"]
+	},
+	"bard": {
+		"name": "Bard",
+		"hitDice": 8,
+		"primaryAbility": ["cha"],
+		"savingThrows": ["dex", "cha"],
+		"spellcaster": true,
+		"spellcastingAbility": "cha",
+		"features": ["Spellcasting", "Bardic Inspiration"],
+		"hasInstrument": true
+	},
+	"cleric": {
+		"name": "Cleric",
+		"hitDice": 8,
+		"primaryAbility": ["wis"],
+		"savingThrows": ["wis", "cha"],
+		"spellcaster": true,
+		"spellcastingAbility": "wis",
+		"features": ["Spellcasting", "Divine Domain"]
+	},
+	"druid": {
+		"name": "Druid",
+		"hitDice": 8,
+		"primaryAbility": ["wis"],
+		"savingThrows": ["int", "wis"],
+		"spellcaster": true,
+		"spellcastingAbility": "wis",
+		"features": ["Spellcasting", "Druidic", "Wild Shape"]
+	},
+	"fighter": {
+		"name": "Fighter",
+		"hitDice": 10,
+		"primaryAbility": ["str", "dex"],
+		"savingThrows": ["str", "con"],
+		"spellcaster": false,
+		"features": ["Fighting Style", "Second Wind"]
+	},
+	"monk": {
+		"name": "Monk",
+		"hitDice": 8,
+		"primaryAbility": ["dex", "wis"],
+		"savingThrows": ["str", "dex"],
+		"spellcaster": false,
+		"features": ["Unarmored Defense", "Martial Arts"]
+	},
+	"paladin": {
+		"name": "Paladin",
+		"hitDice": 10,
+		"primaryAbility": ["str", "cha"],
+		"savingThrows": ["wis", "cha"],
+		"spellcaster": true,
+		"spellcastingAbility": "cha",
+		"features": ["Divine Sense", "Lay on Hands"]
+	},
+	"ranger": {
+		"name": "Ranger",
+		"hitDice": 10,
+		"primaryAbility": ["dex", "wis"],
+		"savingThrows": ["str", "dex"],
+		"spellcaster": true,
+		"spellcastingAbility": "wis",
+		"features": ["Favored Enemy", "Natural Explorer"]
+	},
+	"rogue": {
+		"name": "Rogue",
+		"hitDice": 8,
+		"primaryAbility": ["dex"],
+		"savingThrows": ["dex", "int"],
+		"spellcaster": false,
+		"features": ["Sneak Attack", "Thieves' Cant"]
+	},
+	"sorcerer": {
+		"name": "Sorcerer",
+		"hitDice": 6,
+		"primaryAbility": ["cha"],
+		"savingThrows": ["con", "cha"],
+		"spellcaster": true,
+		"spellcastingAbility": "cha",
+		"features": ["Spellcasting", "Sorcerous Origin"]
+	},
+	"warlock": {
+		"name": "Warlock",
+		"hitDice": 8,
+		"primaryAbility": ["cha"],
+		"savingThrows": ["wis", "cha"],
+		"spellcaster": true,
+		"spellcastingAbility": "cha",
+		"features": ["Otherworldly Patron", "Pact Magic"]
+	},
+	"wizard": {
+		"name": "Wizard",
+		"hitDice": 6,
+		"primaryAbility": ["int"],
+		"savingThrows": ["int", "wis"],
+		"spellcaster": true,
+		"spellcastingAbility": "int",
+		"features": ["Spellcasting", "Arcane Recovery"]
+	}
+}

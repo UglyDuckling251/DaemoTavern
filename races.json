@@ -1,0 +1,65 @@
+{
+	"human": {
+		"name": "Human",
+		"abilityBonuses": { "str": 1, "dex": 1, "con": 1, "int": 1, "wis": 1, "cha": 1 },
+		"speed": 30,
+		"features": ["Versatile: +1 to all ability scores"],
+		"size": "Medium"
+	},
+	"elf": {
+		"name": "Elf",
+		"abilityBonuses": { "dex": 2 },
+		"speed": 30,
+		"features": ["Darkvision (60 ft)", "Keen Senses: Proficiency in Perception", "Fey Ancestry: Advantage vs charm, immune to sleep magic", "Trance: 4 hours of meditation instead of sleep"],
+		"size": "Medium"
+	},
+	"dwarf": {
+		"name": "Dwarf",
+		"abilityBonuses": { "con": 2 },
+		"speed": 25,
+		"features": ["Darkvision (60 ft)", "Dwarven Resilience: Advantage vs poison, resistance to poison damage", "Stonecunning: +2 bonus to History checks on stonework"],
+		"size": "Medium"
+	},
+	"halfling": {
+		"name": "Halfling",
+		"abilityBonuses": { "dex": 2 },
+		"speed": 25,
+		"features": ["Lucky: Reroll 1s on attack, ability check, or saving throw", "Brave: Advantage vs frightened", "Halfling Nimbleness: Move through space of larger creatures"],
+		"size": "Small"
+	},
+	"dragonborn": {
+		"name": "Dragonborn",
+		"abilityBonuses": { "str": 2, "cha": 1 },
+		"speed": 30,
+		"features": ["Draconic Ancestry: Choose dragon type for breath weapon and resistance", "Breath Weapon: 2d6 damage (increases with level)", "Damage Resistance: Resistance to breath weapon damage type"],
+		"size": "Medium"
+	},
+	"gnome": {
+		"name": "Gnome",
+		"abilityBonuses": { "int": 2 },
+		"speed": 25,
+		"features": ["Darkvision (60 ft)", "Gnome Cunning: Advantage on Int, Wis, Cha saves vs magic"],
+		"size": "Small"
+	},
+	"halfelf": {
+		"name": "Half-Elf",
+		"abilityBonuses": { "cha": 2 },
+		"speed": 30,
+		"features": ["Darkvision (60 ft)", "Fey Ancestry", "Skill Versatility"],
+		"size": "Medium"
+	},
+	"halforc": {
+		"name": "Half-Orc",
+		"abilityBonuses": { "str": 2, "con": 1 },
+		"speed": 30,
+		"features": ["Darkvision (60 ft)", "Relentless Endurance: Drop to 1 HP instead of 0 (once per long rest)", "Savage Attacks: Extra weapon damage die on critical hits"],
+		"size": "Medium"
+	},
+	"tiefling": {
+		"name": "Tiefling",
+		"abilityBonuses": { "cha": 2, "int": 1 },
+		"speed": 30,
+		"features": ["Darkvision (60 ft)", "Hellish Resistance: Resistance to fire damage", "Infernal Legacy: Know Thaumaturgy cantrip, cast Hellish Rebuke at level 3, Darkness at level 5"],
+		"size": "Medium"
+	}
+}

@@ -77,9 +77,9 @@
                 });
                 
                 // initialize character creator after popup is shown
-                setTimeout(() => {
+                setTimeout(async () => {
                     if (typeof InitializeCharacterCreator === 'function') {
-                        InitializeCharacterCreator(extensionFolderPath);
+                        await InitializeCharacterCreator(extensionFolderPath);
                     }
                 }, 100);
             });

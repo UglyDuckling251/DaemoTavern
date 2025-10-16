@@ -77,6 +77,9 @@ function UpdateAbilityScoreDisplays() {
     } else {
         $('#pointBudget').removeClass('over-budget');
     }
+    
+    // update token count in real-time
+    CalculateTokenCount();
 }
 
 // calculate hp based on class and level
@@ -145,6 +148,9 @@ function UpdateCombatStats() {
     
     const profBonus = GetProficiencyBonus();
     $('#proficiencyBonus').val(`+${profBonus}`);
+    
+    // update token count in real-time
+    CalculateTokenCount();
 }
 
 // populate race features
@@ -166,6 +172,9 @@ function UpdateRacialFeatures() {
     html += '</ul>';
     
     featuresDiv.html(html);
+    
+    // update token count in real-time
+    CalculateTokenCount();
 }
 
 // check if proficient with armor
@@ -250,6 +259,9 @@ function UpdateProficienciesDisplay() {
     }
     
     $('#proficienciesDisplay').html(html);
+    
+    // update token count in real-time
+    CalculateTokenCount();
 }
 
 // populate class features
@@ -271,6 +283,9 @@ function UpdateClassFeatures() {
     
     featuresDiv.html(html);
     UpdateProficienciesDisplay();
+    
+    // update token count in real-time
+    CalculateTokenCount();
 }
 
 // get spell slots for current class and level
@@ -381,6 +396,9 @@ function UpdateSpellcastingSection() {
     
     // filter spells by class
     PopulateSpellSelectors();
+    
+    // update token count in real-time
+    CalculateTokenCount();
 }
 
 // load spells from json
@@ -596,7 +614,10 @@ function HideSpellTooltip() {
 }
 
 // initialize character creator
-function InitializeCharacterCreator(extensionFolderPath) {
+async function InitializeCharacterCreator(extensionFolderPath) {
+    // load dnd data from json files
+    await LoadDndData(extensionFolderPath);
+    
     // populate race dropdown
     const raceSelect = $('#characterRace');
     for (let key in DND_RACES) {
@@ -706,10 +727,12 @@ function InitializeCharacterCreator(extensionFolderPath) {
     
     $('#characterBackground').on('change', function() {
         characterData.background = $(this).val();
+        CalculateTokenCount();
     });
     
     $('#characterAlignment').on('change', function() {
         characterData.alignment = $(this).val();
+        CalculateTokenCount();
     });
     
     $('#characterWeapon').on('change', function() {
@@ -725,6 +748,7 @@ function InitializeCharacterCreator(extensionFolderPath) {
     
     $('#characterInstrument').on('change', function() {
         characterData.instrument = $(this).val();
+        CalculateTokenCount();
     });
     
     // ability score inputs
@@ -750,43 +774,6 @@ function InitializeCharacterCreator(extensionFolderPath) {
         UpdateAbilityScoreDisplays();
         UpdateCombatStats();
         UpdateSpellcastingSection();
-    });
-    
-    // spell selection
-    $('#addCantripBtn').on('click', AddCantrip);
-    $('#addSpellBtn').on('click', AddSpell);
-    $('#spellLevelFilter').on('change', PopulateSpellSelector);
-    
-    // spell tooltips
-    $(document).on('mouseenter', '#cantripSelector option, #spellSelector option', function(e) {
-        const spellName = $(this).val();
-        ShowSpellTooltip(spellName, e);
-    });
-    
-    $(document).on('mouseleave', '#cantripSelector option, #spellSelector option', function() {
-        HideSpellTooltip();
-    });
-    
-    $(document).on('mouseenter', '.selected-spell-item', function(e) {
-        const spellName = $(this).data('spell');
-        ShowSpellTooltip(spellName, e);
-    });
-    
-    $(document).on('mouseleave', '.selected-spell-item', function() {
-        HideSpellTooltip();
-    });
-    
-    // remove spell buttons
-    $(document).on('click', '.remove-spell-btn', function() {
-        const parent = $(this).closest('.selected-spell-item');
-        const spellName = parent.data('spell');
-        const type = parent.data('type');
-        
-        if (type === 'cantrip') {
-            RemoveCantrip(spellName);
-        } else if (type === 'spell') {
-            RemoveSpell(spellName);
-        }
     });
     
     // save character button
@@ -1040,30 +1027,18 @@ function GenerateStatsText() {
         text += '\n';
     }
     
-    // spells
-    if (characterData.selectedCantrips.length > 0 || characterData.selectedSpells.length > 0) {
+    // spell slots
+    const spellSlots = GetSpellSlots();
+    if (spellSlots) {
         text += `## Spellcasting\n`;
-        
-        if (characterData.selectedCantrips.length > 0) {
-            text += `**Cantrips:** ${characterData.selectedCantrips.join(', ')}\n`;
-        }
-        
-        if (characterData.selectedSpells.length > 0) {
-            text += `**Spells Known:** ${characterData.selectedSpells.join(', ')}\n`;
-        }
-        
-        const spellSlots = GetSpellSlots();
-        if (spellSlots) {
-            text += `**Spell Slots:** `;
-            const slots = [];
-            for (let level = 1; level <= 9; level++) {
-                if (spellSlots[level] > 0) {
-                    slots.push(`${level}st: ${spellSlots[level]}`);
-                }
+        text += `**Spell Slots:** `;
+        const slots = [];
+        for (let level = 1; level <= 9; level++) {
+            if (spellSlots[level] > 0) {
+                slots.push(`${level}st: ${spellSlots[level]}`);
             }
-            text += slots.join(', ') + '\n';
         }
-        text += '\n';
+        text += slots.join(', ') + '\n\n';
     }
     
     // racial features

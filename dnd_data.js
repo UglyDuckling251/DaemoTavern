@@ -1,173 +1,13 @@
 // d&d 5e data structures
 
-// race data with ability score bonuses and features
-const DND_RACES = {
-    human: {
-        name: 'Human',
-        abilityBonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 },
-        speed: 30,
-        features: ['Versatile: +1 to all ability scores'],
-        size: 'Medium'
-    },
-    elf: {
-        name: 'Elf',
-        abilityBonuses: { dex: 2 },
-        speed: 30,
-        features: ['Darkvision (60 ft)', 'Keen Senses: Proficiency in Perception', 'Fey Ancestry: Advantage vs charm, immune to sleep magic', 'Trance: 4 hours of meditation instead of sleep'],
-        size: 'Medium'
-    },
-    dwarf: {
-        name: 'Dwarf',
-        abilityBonuses: { con: 2 },
-        speed: 25,
-        features: ['Darkvision (60 ft)', 'Dwarven Resilience: Advantage vs poison, resistance to poison damage', 'Stonecunning: +2 bonus to History checks on stonework'],
-        size: 'Medium'
-    },
-    halfling: {
-        name: 'Halfling',
-        abilityBonuses: { dex: 2 },
-        speed: 25,
-        features: ['Lucky: Reroll 1s on attack, ability check, or saving throw', 'Brave: Advantage vs frightened', 'Halfling Nimbleness: Move through space of larger creatures'],
-        size: 'Small'
-    },
-    dragonborn: {
-        name: 'Dragonborn',
-        abilityBonuses: { str: 2, cha: 1 },
-        speed: 30,
-        features: ['Draconic Ancestry: Choose dragon type for breath weapon and resistance', 'Breath Weapon: 2d6 damage (increases with level)', 'Damage Resistance: Resistance to breath weapon damage type'],
-        size: 'Medium'
-    },
-    gnome: {
-        name: 'Gnome',
-        abilityBonuses: { int: 2 },
-        speed: 25,
-        features: ['Darkvision (60 ft)', 'Gnome Cunning: Advantage on Int, Wis, Cha saves vs magic'],
-        size: 'Small'
-    },
-    halforc: {
-        name: 'Half-Orc',
-        abilityBonuses: { str: 2, con: 1 },
-        speed: 30,
-        features: ['Darkvision (60 ft)', 'Relentless Endurance: Drop to 1 HP instead of 0 (once per long rest)', 'Savage Attacks: Extra weapon damage die on critical hits'],
-        size: 'Medium'
-    },
-    tiefling: {
-        name: 'Tiefling',
-        abilityBonuses: { cha: 2, int: 1 },
-        speed: 30,
-        features: ['Darkvision (60 ft)', 'Hellish Resistance: Resistance to fire damage', 'Infernal Legacy: Know Thaumaturgy cantrip, cast Hellish Rebuke at level 3, Darkness at level 5'],
-        size: 'Medium'
-    }
-};
-
-// class data with hit dice and features
-const DND_CLASSES = {
-    barbarian: {
-        name: 'Barbarian',
-        hitDice: 12,
-        primaryAbility: ['str'],
-        savingThrows: ['str', 'con'],
-        spellcaster: false,
-        features: ['Rage', 'Unarmored Defense']
-    },
-    bard: {
-        name: 'Bard',
-        hitDice: 8,
-        primaryAbility: ['cha'],
-        savingThrows: ['dex', 'cha'],
-        spellcaster: true,
-        spellcastingAbility: 'cha',
-        features: ['Spellcasting', 'Bardic Inspiration'],
-        hasInstrument: true
-    },
-    cleric: {
-        name: 'Cleric',
-        hitDice: 8,
-        primaryAbility: ['wis'],
-        savingThrows: ['wis', 'cha'],
-        spellcaster: true,
-        spellcastingAbility: 'wis',
-        features: ['Spellcasting', 'Divine Domain']
-    },
-    druid: {
-        name: 'Druid',
-        hitDice: 8,
-        primaryAbility: ['wis'],
-        savingThrows: ['int', 'wis'],
-        spellcaster: true,
-        spellcastingAbility: 'wis',
-        features: ['Spellcasting', 'Druidic', 'Wild Shape']
-    },
-    fighter: {
-        name: 'Fighter',
-        hitDice: 10,
-        primaryAbility: ['str', 'dex'],
-        savingThrows: ['str', 'con'],
-        spellcaster: false,
-        features: ['Fighting Style', 'Second Wind']
-    },
-    monk: {
-        name: 'Monk',
-        hitDice: 8,
-        primaryAbility: ['dex', 'wis'],
-        savingThrows: ['str', 'dex'],
-        spellcaster: false,
-        features: ['Unarmored Defense', 'Martial Arts']
-    },
-    paladin: {
-        name: 'Paladin',
-        hitDice: 10,
-        primaryAbility: ['str', 'cha'],
-        savingThrows: ['wis', 'cha'],
-        spellcaster: true,
-        spellcastingAbility: 'cha',
-        features: ['Divine Sense', 'Lay on Hands']
-    },
-    ranger: {
-        name: 'Ranger',
-        hitDice: 10,
-        primaryAbility: ['dex', 'wis'],
-        savingThrows: ['str', 'dex'],
-        spellcaster: true,
-        spellcastingAbility: 'wis',
-        features: ['Favored Enemy', 'Natural Explorer']
-    },
-    rogue: {
-        name: 'Rogue',
-        hitDice: 8,
-        primaryAbility: ['dex'],
-        savingThrows: ['dex', 'int'],
-        spellcaster: false,
-        features: ['Sneak Attack', 'Thieves\' Cant']
-    },
-    sorcerer: {
-        name: 'Sorcerer',
-        hitDice: 6,
-        primaryAbility: ['cha'],
-        savingThrows: ['con', 'cha'],
-        spellcaster: true,
-        spellcastingAbility: 'cha',
-        features: ['Spellcasting', 'Sorcerous Origin']
-    },
-    warlock: {
-        name: 'Warlock',
-        hitDice: 8,
-        primaryAbility: ['cha'],
-        savingThrows: ['wis', 'cha'],
-        spellcaster: true,
-        spellcastingAbility: 'cha',
-        features: ['Otherworldly Patron', 'Pact Magic']
-    },
-    wizard: {
-        name: 'Wizard',
-        hitDice: 6,
-        primaryAbility: ['int'],
-        savingThrows: ['int', 'wis'],
-        spellcaster: true,
-        spellcastingAbility: 'int',
-        features: ['Spellcasting', 'Arcane Recovery']
-    }
-};
+// data loaded from json files
+let DND_RACES = {};
+let DND_CLASSES = {};
+let BACKGROUNDS = [];
+let ALIGNMENTS = [];
+let ARMOR = {};
+let WEAPONS = {};
+let INSTRUMENTS = [];
 
 // spell slots by class level (full casters)
 const SPELL_SLOTS_FULL_CASTER = {
@@ -235,42 +75,6 @@ const SPELLS_KNOWN = {
     warlock: { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 10, 10: 10, 11: 11, 12: 11, 13: 12, 14: 12, 15: 13, 16: 13, 17: 14, 18: 14, 19: 15, 20: 15 }
 };
 
-// alignments
-const ALIGNMENTS = [
-    'Lawful Good', 'Neutral Good', 'Chaotic Good',
-    'Lawful Neutral', 'True Neutral', 'Chaotic Neutral',
-    'Lawful Evil', 'Neutral Evil', 'Chaotic Evil'
-];
-
-// backgrounds
-const BACKGROUNDS = [
-    'Acolyte', 'Charlatan', 'Criminal', 'Entertainer', 'Folk Hero',
-    'Guild Artisan', 'Hermit', 'Noble', 'Outlander', 'Sage',
-    'Sailor', 'Soldier', 'Urchin'
-];
-
-// weapons
-const WEAPONS = {
-    simple: [
-        'Club', 'Dagger', 'Greatclub', 'Handaxe', 'Javelin',
-        'Light Hammer', 'Mace', 'Quarterstaff', 'Sickle', 'Spear',
-        'Crossbow (Light)', 'Dart', 'Shortbow', 'Sling'
-    ],
-    martial: [
-        'Battleaxe', 'Flail', 'Glaive', 'Greataxe', 'Greatsword',
-        'Halberd', 'Lance', 'Longsword', 'Maul', 'Morningstar',
-        'Pike', 'Rapier', 'Scimitar', 'Shortsword', 'Trident',
-        'War Pick', 'Warhammer', 'Whip', 'Blowgun',
-        'Crossbow (Hand)', 'Crossbow (Heavy)', 'Longbow', 'Net'
-    ]
-};
-
-// musical instruments
-const INSTRUMENTS = [
-    'Bagpipes', 'Drum', 'Dulcimer', 'Flute', 'Lute',
-    'Lyre', 'Horn', 'Pan Flute', 'Shawm', 'Viol'
-];
-
 // ability score point buy system (starts at 10, 27 points available for standard buy)
 // extended to 20 for characters who gain ability score increases through leveling
 const ABILITY_POINT_COSTS = {
@@ -286,23 +90,6 @@ const PROFICIENCY_BONUS = {
     9: 4, 10: 4, 11: 4, 12: 4,
     13: 5, 14: 5, 15: 5, 16: 5,
     17: 6, 18: 6, 19: 6, 20: 6
-};
-
-// armor types
-const ARMOR = {
-    none: { name: 'No Armor', type: 'none', ac: 10, dexBonus: 'full', stealthDisadvantage: false },
-    padded: { name: 'Padded', type: 'light', ac: 11, dexBonus: 'full', stealthDisadvantage: true },
-    leather: { name: 'Leather', type: 'light', ac: 11, dexBonus: 'full', stealthDisadvantage: false },
-    studdedLeather: { name: 'Studded Leather', type: 'light', ac: 12, dexBonus: 'full', stealthDisadvantage: false },
-    hide: { name: 'Hide', type: 'medium', ac: 12, dexBonus: 2, stealthDisadvantage: false },
-    chainShirt: { name: 'Chain Shirt', type: 'medium', ac: 13, dexBonus: 2, stealthDisadvantage: false },
-    scaleMail: { name: 'Scale Mail', type: 'medium', ac: 14, dexBonus: 2, stealthDisadvantage: true },
-    breastplate: { name: 'Breastplate', type: 'medium', ac: 14, dexBonus: 2, stealthDisadvantage: false },
-    halfPlate: { name: 'Half Plate', type: 'medium', ac: 15, dexBonus: 2, stealthDisadvantage: true },
-    ringMail: { name: 'Ring Mail', type: 'heavy', ac: 14, dexBonus: 0, stealthDisadvantage: true },
-    chainMail: { name: 'Chain Mail', type: 'heavy', ac: 16, dexBonus: 0, stealthDisadvantage: true },
-    splint: { name: 'Splint', type: 'heavy', ac: 17, dexBonus: 0, stealthDisadvantage: true },
-    plate: { name: 'Plate', type: 'heavy', ac: 18, dexBonus: 0, stealthDisadvantage: true }
 };
 
 // class proficiencies
@@ -368,3 +155,38 @@ const CLASS_PROFICIENCIES = {
         savingThrows: ['int', 'wis']
     }
 };
+
+// load data from json files
+async function LoadDndData(extensionFolderPath) {
+    try {
+        // load races
+        DND_RACES = await $.get(`${extensionFolderPath}/races.json`);
+        console.log('Loaded races:', Object.keys(DND_RACES).length);
+        
+        // load classes
+        DND_CLASSES = await $.get(`${extensionFolderPath}/classes.json`);
+        console.log('Loaded classes:', Object.keys(DND_CLASSES).length);
+        
+        // load backgrounds
+        BACKGROUNDS = await $.get(`${extensionFolderPath}/backgrounds.json`);
+        console.log('Loaded backgrounds:', BACKGROUNDS.length);
+        
+        // load alignments
+        ALIGNMENTS = await $.get(`${extensionFolderPath}/alignments.json`);
+        console.log('Loaded alignments:', ALIGNMENTS.length);
+        
+        // load armors
+        ARMOR = await $.get(`${extensionFolderPath}/armors.json`);
+        console.log('Loaded armors:', Object.keys(ARMOR).length);
+        
+        // load weapons
+        WEAPONS = await $.get(`${extensionFolderPath}/weapons.json`);
+        console.log('Loaded weapons:', WEAPONS.simple.length + WEAPONS.martial.length);
+        
+        // load instruments
+        INSTRUMENTS = await $.get(`${extensionFolderPath}/instruments.json`);
+        console.log('Loaded instruments:', INSTRUMENTS.length);
+    } catch (error) {
+        console.error('Error loading D&D data:', error);
+    }
+}
