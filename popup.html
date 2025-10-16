@@ -1,3 +1,209 @@
 <div id="daemoTavernPopup">
-    <h2>Daemo Tavern</h2>
+    <h2>D&D 5e Character Sheet</h2>
+    
+    <div class="character-sheet-container">
+        <!-- left column basic info -->
+        <div class="left-column">
+            <!-- basic character info -->
+            <div class="card">
+                <h3>Basic Information</h3>
+                <label>
+                    Character Name
+                    <input type="text" id="characterName" class="text_pole" placeholder="Enter name">
+                </label>
+                
+                <label>
+                    Race
+                    <select id="characterRace" class="text_pole">
+                        <option value="">Select Race</option>
+                    </select>
+                </label>
+                
+                <label>
+                    Class
+                    <select id="characterClass" class="text_pole">
+                        <option value="">Select Class</option>
+                    </select>
+                </label>
+                
+                <label>
+                    Level
+                    <input type="number" id="characterLevel" class="text_pole" min="1" max="20" value="1">
+                </label>
+                
+                <label>
+                    Background
+                    <select id="characterBackground" class="text_pole">
+                        <option value="">Select Background</option>
+                    </select>
+                </label>
+                
+                <label>
+                    Alignment
+                    <select id="characterAlignment" class="text_pole">
+                        <option value="">Select Alignment</option>
+                    </select>
+                </label>
+            </div>
+            
+            <!-- combat stats -->
+            <div class="card">
+                <h3>Combat Stats</h3>
+                <div class="stat-row">
+                    <label>
+                        HP
+                        <input type="number" id="characterHP" class="text_pole stat-input" readonly>
+                    </label>
+                    <label>
+                        AC
+                        <input type="number" id="characterAC" class="text_pole stat-input" value="10">
+                    </label>
+                    <label>
+                        Speed
+                        <input type="number" id="characterSpeed" class="text_pole stat-input" readonly>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- ability scores -->
+            <div class="card">
+                <h3>Ability Scores</h3>
+                <div id="pointBudget" class="point-budget">Points Remaining: <span id="pointsRemaining">27</span></div>
+                
+                <div class="ability-scores-grid">
+                    <div class="ability-score">
+                        <label>STR</label>
+                        <input type="number" id="abilitySTR" class="text_pole ability-input" min="8" max="15" value="8" data-ability="str">
+                        <div class="ability-modifier" id="modSTR">+0</div>
+                        <div class="ability-total" id="totalSTR">Base: 8</div>
+                    </div>
+                    <div class="ability-score">
+                        <label>DEX</label>
+                        <input type="number" id="abilityDEX" class="text_pole ability-input" min="8" max="15" value="8" data-ability="dex">
+                        <div class="ability-modifier" id="modDEX">+0</div>
+                        <div class="ability-total" id="totalDEX">Base: 8</div>
+                    </div>
+                    <div class="ability-score">
+                        <label>CON</label>
+                        <input type="number" id="abilityCON" class="text_pole ability-input" min="8" max="15" value="8" data-ability="con">
+                        <div class="ability-modifier" id="modCON">+0</div>
+                        <div class="ability-total" id="totalCON">Base: 8</div>
+                    </div>
+                    <div class="ability-score">
+                        <label>INT</label>
+                        <input type="number" id="abilityINT" class="text_pole ability-input" min="8" max="15" value="8" data-ability="int">
+                        <div class="ability-modifier" id="modINT">+0</div>
+                        <div class="ability-total" id="totalINT">Base: 8</div>
+                    </div>
+                    <div class="ability-score">
+                        <label>WIS</label>
+                        <input type="number" id="abilityWIS" class="text_pole ability-input" min="8" max="15" value="8" data-ability="wis">
+                        <div class="ability-modifier" id="modWIS">+0</div>
+                        <div class="ability-total" id="totalWIS">Base: 8</div>
+                    </div>
+                    <div class="ability-score">
+                        <label>CHA</label>
+                        <input type="number" id="abilityCHA" class="text_pole ability-input" min="8" max="15" value="8" data-ability="cha">
+                        <div class="ability-modifier" id="modCHA">+0</div>
+                        <div class="ability-total" id="totalCHA">Base: 8</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- equipment -->
+            <div class="card">
+                <h3>Equipment</h3>
+                <label>
+                    Weapon
+                    <select id="characterWeapon" class="text_pole">
+                        <option value="">Select Weapon</option>
+                    </select>
+                </label>
+                
+                <label id="instrumentSection" style="display: none;">
+                    Musical Instrument
+                    <select id="characterInstrument" class="text_pole">
+                        <option value="">Select Instrument</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        
+        <!-- right column features and spells -->
+        <div class="right-column">
+            <!-- racial and class features -->
+            <div class="card">
+                <h3>Racial Features</h3>
+                <div id="racialFeatures" class="features-list">
+                    <p class="subtle">Select a race to see features</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Class Features</h3>
+                <div id="classFeatures" class="features-list">
+                    <p class="subtle">Select a class to see features</p>
+                </div>
+            </div>
+            
+            <!-- spellcasting section -->
+            <div id="spellcastingSection" class="card" style="display: none;">
+                <h3>Spellcasting</h3>
+                
+                <!-- spell slots -->
+                <div class="spell-slots-container">
+                    <h4>Spell Slots</h4>
+                    <div class="spell-slots-grid" id="spellSlotsDisplay">
+                        <!-- will be populated dynamically -->
+                    </div>
+                </div>
+                
+                <!-- cantrips -->
+                <div class="spells-container">
+                    <h4>Cantrips <span id="cantripsKnown">(0/0)</span></h4>
+                    <div class="spell-selection-area">
+                        <select id="cantripSelector" class="text_pole" multiple size="5">
+                            <!-- populated from spells.json -->
+                        </select>
+                        <button id="addCantripBtn" class="menu_button">Add Cantrip</button>
+                    </div>
+                    <div id="selectedCantrips" class="selected-spells">
+                        <!-- selected cantrips will appear here -->
+                    </div>
+                </div>
+                
+                <!-- spells -->
+                <div class="spells-container">
+                    <h4>Spells Known <span id="spellsKnown">(0/0)</span></h4>
+                    <label>
+                        Filter by Spell Level
+                        <select id="spellLevelFilter" class="text_pole">
+                            <option value="all">All Levels</option>
+                            <option value="1">1st Level</option>
+                            <option value="2">2nd Level</option>
+                            <option value="3">3rd Level</option>
+                            <option value="4">4th Level</option>
+                            <option value="5">5th Level</option>
+                            <option value="6">6th Level</option>
+                            <option value="7">7th Level</option>
+                            <option value="8">8th Level</option>
+                            <option value="9">9th Level</option>
+                        </select>
+                    </label>
+                    <div class="spell-selection-area">
+                        <select id="spellSelector" class="text_pole" multiple size="8">
+                            <!-- populated from spells.json -->
+                        </select>
+                        <button id="addSpellBtn" class="menu_button">Add Spell</button>
+                    </div>
+                    <div id="selectedSpells" class="selected-spells">
+                        <!-- selected spells will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- spell tooltip -->
+    <div id="spellTooltip" class="spell-tooltip" style="display: none;"></div>
 </div>

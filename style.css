@@ -6,12 +6,13 @@
 /* popup styling */
 .popup-content:has(#daemoTavernPopup) {
     overflow-y: auto;
+    max-height: 85vh;
 }
 
 #daemoTavernPopup {
     color: var(--SmartThemeBodyColor);
     font-family: var(--mainFontFamily);
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     font-size: var(--mainFontSize);
     padding: 20px;
@@ -22,4 +23,308 @@
     margin-bottom: 20px;
     font-weight: 500;
     color: var(--SmartThemeBodyColor);
+}
+
+#daemoTavernPopup h3 {
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--SmartThemeBodyColor);
+}
+
+#daemoTavernPopup h4 {
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: var(--SmartThemeBodyColor);
+}
+
+/* character sheet layout */
+.character-sheet-container {
+    display: flex;
+    gap: 20px;
+}
+
+.left-column {
+    flex: 0 0 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+/* card styling */
+.card {
+    background-color: var(--SmartThemeBlurTintColor);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px var(--SmartThemeShadowColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+}
+
+.card label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.card label:last-child {
+    margin-bottom: 0;
+}
+
+/* stat row */
+.stat-row {
+    display: flex;
+    gap: 10px;
+}
+
+.stat-row label {
+    flex: 1;
+}
+
+.stat-input {
+    width: 100%;
+}
+
+/* ability scores grid */
+.ability-scores-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.ability-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.ability-score label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.ability-input {
+    width: 60px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.ability-modifier {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--SmartThemeQuoteColor);
+    margin: 5px 0;
+}
+
+.ability-total {
+    font-size: 0.85em;
+    color: var(--grey70);
+}
+
+/* point budget */
+.point-budget {
+    text-align: center;
+    padding: 10px;
+    background-color: var(--SmartThemeBlurTintColor);
+    border-radius: 5px;
+    font-weight: bold;
+    border: 2px solid var(--SmartThemeBorderColor);
+}
+
+.point-budget.over-budget {
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+#pointsRemaining {
+    font-size: 1.2em;
+}
+
+/* features list */
+.features-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.features-list ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.features-list li {
+    margin-bottom: 8px;
+}
+
+.features-list .subtle {
+    text-align: center;
+    color: var(--grey70);
+    font-style: italic;
+}
+
+/* spell slots */
+.spell-slots-container {
+    margin-bottom: 20px;
+}
+
+.spell-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.spell-slot-item {
+    padding: 8px;
+    background-color: var(--SmartThemeBlurTintColor);
+    border-radius: 5px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    text-align: center;
+}
+
+.slot-level {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.slot-count {
+    color: var(--SmartThemeQuoteColor);
+    font-weight: bold;
+}
+
+/* spells container */
+.spells-container {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+}
+
+.spell-selection-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.spell-selection-area select {
+    min-height: 120px;
+}
+
+.selected-spells {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: var(--SmartThemeBlurTintColor);
+    border-radius: 5px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    min-height: 50px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.selected-spell-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: var(--black30a);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.selected-spell-item:hover {
+    background-color: var(--black50a);
+}
+
+.spell-name {
+    flex: 1;
+}
+
+.remove-spell-btn {
+    background: none;
+    border: none;
+    color: #ff4444;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.remove-spell-btn:hover {
+    color: #ff0000;
+}
+
+/* spell tooltip */
+.spell-tooltip {
+    position: fixed;
+    background-color: var(--SmartThemeBlurTintColor);
+    border: 2px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+    padding: 15px;
+    max-width: 400px;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+.spell-tooltip-content h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--SmartThemeQuoteColor);
+}
+
+.spell-level {
+    font-style: italic;
+    color: var(--grey70);
+    margin-bottom: 10px;
+}
+
+.spell-description {
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+.spell-upgrade {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+    font-style: italic;
+}
+
+/* responsive design */
+@media (max-width: 1200px) {
+    .character-sheet-container {
+        flex-direction: column;
+    }
+    
+    .left-column {
+        flex: 1;
+    }
+    
+    .right-column {
+        max-height: none;
+    }
+    
+    .ability-scores-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .spell-slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

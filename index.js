@@ -43,6 +43,21 @@
         $('#extensions_settings2').append(settingsHtml);
     }
 
+    // load dnd data and character creator scripts
+    async function LoadCharacterCreatorScripts() {
+        try {
+            // load dnd data
+            await $.getScript(`${extensionFolderPath}/dnd_data.js`);
+            console.log('DnD data loaded');
+            
+            // load character creator logic
+            await $.getScript(`${extensionFolderPath}/character_creator.js`);
+            console.log('Character creator logic loaded');
+        } catch (error) {
+            console.error('Error loading character creator scripts:', error);
+        }
+    }
+
     // load popup button
     async function LoadPopupButton() {
         const iconHtml = `<div class="menu_button fa-solid fa-dragon interactable daemoTavern-icon" title="Daemo Tavern"></div>`;
@@ -60,6 +75,13 @@
                     large: true,
                     wide: true
                 });
+                
+                // initialize character creator after popup is shown
+                setTimeout(() => {
+                    if (typeof InitializeCharacterCreator === 'function') {
+                        InitializeCharacterCreator(extensionFolderPath);
+                    }
+                }, 100);
             });
         });
     }
@@ -69,6 +91,7 @@
         await LoadSettingsHtml();
         LoadSettings();
         SetupEventHandlers();
+        await LoadCharacterCreatorScripts();
         await LoadPopupButton();
         
         console.log('DaemoTavern initialized successfully');
