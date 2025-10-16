@@ -271,9 +271,10 @@ const INSTRUMENTS = [
     'Lyre', 'Horn', 'Pan Flute', 'Shawm', 'Viol'
 ];
 
-// ability score point buy system (starts at 10, 27 points available)
+// ability score point buy system (starts at 10, 27 points available for standard buy)
+// extended to 20 for characters who gain ability score increases through leveling
 const ABILITY_POINT_COSTS = {
-    8: -2, 9: -1, 10: 0, 11: 1, 12: 2, 13: 3, 14: 5, 15: 7
+    8: -2, 9: -1, 10: 0, 11: 1, 12: 2, 13: 3, 14: 5, 15: 7, 16: 9, 17: 12, 18: 15, 19: 19, 20: 24
 };
 
 const ABILITY_POINT_BUDGET = 27;

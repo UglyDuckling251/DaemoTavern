@@ -86,6 +86,50 @@
         });
     }
 
+    // get extension prompt for injection into ai
+    function GetExtensionPrompt() {
+        if (!context.extensionSettings[extensionName]?.statsEnabled) {
+            return '';
+        }
+        
+        const characterStats = context.extensionSettings[extensionName]?.characterStats;
+        return characterStats || '';
+    }
+    
+    // setup prompt injection hook
+    function SetupPromptInjection() {
+        // register extension prompts
+        if (window.setExtensionPrompt) {
+            window.setExtensionPrompt(extensionName, GetExtensionPrompt, 100, 0);
+        }
+        
+        // register slash command to toggle stats injection
+        if (context.registerSlashCommand) {
+            context.registerSlashCommand('daemo-stats', (args) => {
+                const action = String(args).trim().toLowerCase() || 'toggle';
+                
+                if (action === 'on') {
+                    context.extensionSettings[extensionName].statsEnabled = true;
+                    toastr.success('Character stats injection enabled', 'Daemo Tavern');
+                } else if (action === 'off') {
+                    context.extensionSettings[extensionName].statsEnabled = false;
+                    toastr.info('Character stats injection disabled', 'Daemo Tavern');
+                } else {
+                    // toggle
+                    const enabled = !context.extensionSettings[extensionName]?.statsEnabled;
+                    if (!context.extensionSettings[extensionName]) {
+                        context.extensionSettings[extensionName] = {};
+                    }
+                    context.extensionSettings[extensionName].statsEnabled = enabled;
+                    toastr.info(`Character stats injection ${enabled ? 'enabled' : 'disabled'}`, 'Daemo Tavern');
+                }
+                
+                context.saveSettingsDebounced();
+                return '';
+            }, [], '<span class="monospace">on/off/toggle</span> – Toggle D&D character stats injection into AI prompts', true, true);
+        }
+    }
+    
     // initialize extension
     async function Init() {
         await LoadSettingsHtml();
@@ -93,6 +137,7 @@
         SetupEventHandlers();
         await LoadCharacterCreatorScripts();
         await LoadPopupButton();
+        SetupPromptInjection();
         
         console.log('DaemoTavern initialized successfully');
     }

@@ -1,9 +1,15 @@
 <div id="daemoTavernPopup">
     <div class="character-header">
-        <h2 id="characterTitle" class="character-title-clickable" title="Click to edit name">Unnamed Character</h2>
-        <button id="saveCharacterBtn" class="menu_button save-character-btn">
-            <i class="fa-solid fa-floppy-disk"></i> Save Character
-        </button>
+        <h2 id="characterTitle">No Character Selected</h2>
+        <div class="header-controls">
+            <div class="token-display">
+                <span class="token-label">Tokens:</span>
+                <span id="tokenCount" class="token-count">0</span>
+            </div>
+            <button id="saveCharacterBtn" class="menu_button save-character-btn">
+                <i class="fa-solid fa-floppy-disk"></i> Save Character
+            </button>
+        </div>
     </div>
     
     <div class="character-sheet-container">
@@ -77,37 +83,37 @@
                 <div class="ability-scores-grid">
                     <div class="ability-score">
                         <label>STR</label>
-                        <input type="number" id="abilitySTR" class="text_pole ability-input" min="8" max="15" value="10" data-ability="str">
+                        <input type="number" id="abilitySTR" class="text_pole ability-input" min="8" max="20" value="10" data-ability="str">
                         <div class="ability-modifier" id="modSTR">+0</div>
                         <div class="ability-total" id="totalSTR">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>DEX</label>
-                        <input type="number" id="abilityDEX" class="text_pole ability-input" min="8" max="15" value="10" data-ability="dex">
+                        <input type="number" id="abilityDEX" class="text_pole ability-input" min="8" max="20" value="10" data-ability="dex">
                         <div class="ability-modifier" id="modDEX">+0</div>
                         <div class="ability-total" id="totalDEX">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>CON</label>
-                        <input type="number" id="abilityCON" class="text_pole ability-input" min="8" max="15" value="10" data-ability="con">
+                        <input type="number" id="abilityCON" class="text_pole ability-input" min="8" max="20" value="10" data-ability="con">
                         <div class="ability-modifier" id="modCON">+0</div>
                         <div class="ability-total" id="totalCON">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>INT</label>
-                        <input type="number" id="abilityINT" class="text_pole ability-input" min="8" max="15" value="10" data-ability="int">
+                        <input type="number" id="abilityINT" class="text_pole ability-input" min="8" max="20" value="10" data-ability="int">
                         <div class="ability-modifier" id="modINT">+0</div>
                         <div class="ability-total" id="totalINT">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>WIS</label>
-                        <input type="number" id="abilityWIS" class="text_pole ability-input" min="8" max="15" value="10" data-ability="wis">
+                        <input type="number" id="abilityWIS" class="text_pole ability-input" min="8" max="20" value="10" data-ability="wis">
                         <div class="ability-modifier" id="modWIS">+0</div>
                         <div class="ability-total" id="totalWIS">Base: 8</div>
                     </div>
                     <div class="ability-score">
                         <label>CHA</label>
-                        <input type="number" id="abilityCHA" class="text_pole ability-input" min="8" max="15" value="10" data-ability="cha">
+                        <input type="number" id="abilityCHA" class="text_pole ability-input" min="8" max="20" value="10" data-ability="cha">
                         <div class="ability-modifier" id="modCHA">+0</div>
                         <div class="ability-total" id="totalCHA">Base: 8</div>
                     </div>

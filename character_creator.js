@@ -1,7 +1,7 @@
 // d&d 5e character creation logic
 
 let characterData = {
-    name: 'Unnamed Character',
+    name: '',
     race: '',
     class: '',
     level: 1,
@@ -17,6 +17,8 @@ let characterData = {
     selectedCantrips: [],
     selectedSpells: []
 };
+
+let tokenCount = 0;
 
 let allSpells = [];
 let pointsSpent = 0;
@@ -730,7 +732,7 @@ function InitializeCharacterCreator(extensionFolderPath) {
         let value = parseInt($(this).val());
         
         if (value < 8) value = 8;
-        if (value > 15) value = 15;
+        if (value > 20) value = 20;
         
         // check if change would exceed budget
         const oldValue = characterData.abilityScores[ability];
@@ -789,8 +791,8 @@ function InitializeCharacterCreator(extensionFolderPath) {
     // save character button
     $('#saveCharacterBtn').on('click', SaveCharacter);
     
-    // make character title editable
-    MakeCharacterTitleEditable();
+    // get character name from sillytavern
+    GetCharacterName();
     
     // load character on init
     LoadCharacter();
@@ -811,6 +813,9 @@ function SaveCharacter() {
     
     context.extensionSettings[extensionName].characterData = JSON.parse(JSON.stringify(characterData));
     context.saveSettingsDebounced();
+    
+    // inject stats into context for ai
+    InjectStatsIntoContext();
     
     // update character name in title
     UpdateCharacterTitle();
@@ -859,37 +864,169 @@ function LoadCharacter() {
             $('#instrumentSection').show();
         }
         
+        // calculate token count
+        CalculateTokenCount();
+        
         console.log('Character loaded:', characterData);
+    } else {
+        // initialize token count even if no saved data
+        CalculateTokenCount();
     }
+}
+
+// get character name from sillytavern
+function GetCharacterName() {
+    const context = SillyTavern.getContext();
+    
+    // get active character name
+    if (context.name2) {
+        characterData.name = context.name2;
+    } else if (context.characters && context.characters[context.characterId]) {
+        characterData.name = context.characters[context.characterId].name;
+    } else {
+        characterData.name = 'No Character Selected';
+    }
+    
+    UpdateCharacterTitle();
 }
 
 // update character title
 function UpdateCharacterTitle() {
-    const name = characterData.name || 'Unnamed Character';
+    const name = characterData.name || 'No Character Selected';
     $('#characterTitle').text(name);
 }
 
-// editable character name in title
-function MakeCharacterTitleEditable() {
-    $('#characterTitle').on('click', function() {
-        const currentName = $(this).text();
-        const input = $('<input type="text" class="character-title-edit">').val(currentName);
-        
-        $(this).replaceWith(input);
-        input.focus().select();
-        
-        input.on('blur', function() {
-            const newName = $(this).val().trim() || 'Unnamed Character';
-            characterData.name = newName;
-            const newTitle = $('<h2 id="characterTitle" class="character-title-clickable"></h2>').text(newName);
-            $(this).replaceWith(newTitle);
-            MakeCharacterTitleEditable();
-        });
-        
-        input.on('keypress', function(e) {
-            if (e.which === 13) {
-                $(this).blur();
-            }
-        });
+// calculate token count for character sheet
+function CalculateTokenCount() {
+    const statsText = GenerateStatsText();
+    const context = SillyTavern.getContext();
+    
+    // use sillytavern's token counter if available
+    if (context.getTokenCount) {
+        tokenCount = context.getTokenCount(statsText);
+    } else if (window.tokenizers?.countTokens) {
+        tokenCount = window.tokenizers.countTokens(statsText);
+    } else {
+        // fallback rough estimate
+        tokenCount = Math.ceil(statsText.length / 4);
+    }
+    
+    $('#tokenCount').text(tokenCount);
+    return tokenCount;
+}
+
+// generate character stats as text for ai
+function GenerateStatsText() {
+    let text = `# ${characterData.name} - D&D 5e Character Sheet\n\n`;
+    
+    // basic info
+    if (characterData.race) text += `**Race:** ${DND_RACES[characterData.race]?.name || characterData.race}\n`;
+    if (characterData.class) text += `**Class:** ${DND_CLASSES[characterData.class]?.name || characterData.class}\n`;
+    text += `**Level:** ${characterData.level}\n`;
+    if (characterData.background) text += `**Background:** ${characterData.background}\n`;
+    if (characterData.alignment) text += `**Alignment:** ${characterData.alignment}\n\n`;
+    
+    // combat stats
+    text += `## Combat Stats\n`;
+    text += `**HP:** ${characterData.hp}\n`;
+    text += `**AC:** ${characterData.ac}\n`;
+    text += `**Speed:** ${characterData.speed} ft\n`;
+    text += `**Proficiency Bonus:** +${GetProficiencyBonus()}\n\n`;
+    
+    // ability scores
+    text += `## Ability Scores\n`;
+    const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    abilities.forEach(ability => {
+        const total = GetTotalAbilityScore(ability);
+        const mod = CalculateModifier(total);
+        const modStr = mod >= 0 ? `+${mod}` : `${mod}`;
+        text += `**${ability.toUpperCase()}:** ${total} (${modStr})\n`;
     });
+    text += '\n';
+    
+    // equipment
+    if (characterData.armor || characterData.weapon) {
+        text += `## Equipment\n`;
+        if (characterData.armor && ARMOR[characterData.armor]) {
+            text += `**Armor:** ${ARMOR[characterData.armor].name}\n`;
+        }
+        if (characterData.weapon) {
+            text += `**Weapon:** ${characterData.weapon}\n`;
+        }
+        if (characterData.instrument && characterData.class === 'bard') {
+            text += `**Instrument:** ${characterData.instrument}\n`;
+        }
+        text += '\n';
+    }
+    
+    // spells
+    if (characterData.selectedCantrips.length > 0 || characterData.selectedSpells.length > 0) {
+        text += `## Spellcasting\n`;
+        
+        if (characterData.selectedCantrips.length > 0) {
+            text += `**Cantrips:** ${characterData.selectedCantrips.join(', ')}\n`;
+        }
+        
+        if (characterData.selectedSpells.length > 0) {
+            text += `**Spells Known:** ${characterData.selectedSpells.join(', ')}\n`;
+        }
+        
+        const spellSlots = GetSpellSlots();
+        if (spellSlots) {
+            text += `**Spell Slots:** `;
+            const slots = [];
+            for (let level = 1; level <= 9; level++) {
+                if (spellSlots[level] > 0) {
+                    slots.push(`${level}st: ${spellSlots[level]}`);
+                }
+            }
+            text += slots.join(', ') + '\n';
+        }
+        text += '\n';
+    }
+    
+    // racial features
+    if (characterData.race && DND_RACES[characterData.race]) {
+        const race = DND_RACES[characterData.race];
+        if (race.features && race.features.length > 0) {
+            text += `## Racial Features\n`;
+            race.features.forEach(feature => {
+                text += `- ${feature}\n`;
+            });
+            text += '\n';
+        }
+    }
+    
+    // class features
+    if (characterData.class && DND_CLASSES[characterData.class]) {
+        const classData = DND_CLASSES[characterData.class];
+        if (classData.features && classData.features.length > 0) {
+            text += `## Class Features\n`;
+            classData.features.forEach(feature => {
+                text += `- ${feature}\n`;
+            });
+            text += '\n';
+        }
+    }
+    
+    return text;
+}
+
+// inject character stats into ai context
+function InjectStatsIntoContext() {
+    const context = SillyTavern.getContext();
+    const extensionName = 'DaemoTavern';
+    
+    const statsText = GenerateStatsText();
+    
+    // store in extension settings for prompt injection
+    if (!context.extensionSettings[extensionName]) {
+        context.extensionSettings[extensionName] = {};
+    }
+    
+    context.extensionSettings[extensionName].characterStats = statsText;
+    context.extensionSettings[extensionName].statsEnabled = true;
+    
+    console.log('Character stats injected into context');
+    CalculateTokenCount();
 }
