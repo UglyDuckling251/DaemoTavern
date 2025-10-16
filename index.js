@@ -8,7 +8,7 @@
     const extensionName = 'DaemoTavern';
     const extensionFolderPath = 'scripts/extensions/third-party/Extension-DaemoTavern';
     const defaultSettings = {
-        useFunctionTool: false
+        testCheckbox: false
     };
 
     // load settings
@@ -18,21 +18,21 @@
         }
         
         // apply settings to ui
-        $('#dice_function_tool').prop('checked', context.extensionSettings[extensionName].useFunctionTool);
+        $('#test').prop('checked', context.extensionSettings[extensionName].testCheckbox);
         
         console.log('DaemoTavern settings loaded:', context.extensionSettings[extensionName]);
     }
 
     // save settings
     function SaveSettings() {
-        context.extensionSettings[extensionName].useFunctionTool = $('#dice_function_tool').prop('checked');
+        context.extensionSettings[extensionName].testCheckbox = $('#test').prop('checked');
         context.saveSettingsDebounced();
         console.log('DaemoTavern settings saved');
     }
 
     // setup event handlers
     function SetupEventHandlers() {
-        $('#dice_function_tool').on('change', function() {
+        $('#test').on('change', function() {
             SaveSettings();
         });
     }

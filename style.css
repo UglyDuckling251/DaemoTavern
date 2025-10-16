@@ -1,4 +1,4 @@
-#dice_dropdown {
+.daemo_tavern_settings {
     z-index: 30000;
     backdrop-filter: blur(--SmartThemeBlurStrength);
 }
