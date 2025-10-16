@@ -58,14 +58,9 @@
         }
     }
 
-    // check if current context is group chat
-    function IsGroupChat() {
-        return context.groupId !== undefined && context.groupId !== null;
-    }
-    
     // load popup button
     async function LoadPopupButton() {
-        const iconHtml = `<div class="menu_button fa-solid fa-dragon interactable daemoTavern-icon" title="Daemon Tavern - Daemon Editor"></div>`;
+        const iconHtml = `<div class="menu_button fa-solid fa-dragon interactable daemoTavern-icon" title="Daemon Editor - Create/Edit Daemon Profile"></div>`;
         
         $('.form_create_bottom_buttons_block').prepend(iconHtml);
         $('#GroupFavDelOkBack').prepend(iconHtml);
@@ -75,25 +70,13 @@
         
         popupIcons.forEach((icon) => {
             icon.addEventListener('click', async () => {
-                // check if in group chat
-                if (IsGroupChat()) {
-                    toastr.warning('Daemon Profiles are not available in group chats', 'Daemon Tavern');
-                    return;
-                }
-                
-                // check if a character is selected
-                if (context.characterId === undefined || context.characterId === null) {
-                    toastr.warning('Please select a character first', 'Daemon Tavern');
-                    return;
-                }
-                
                 const popupHtml = await $.get(`${extensionFolderPath}/popup.html`);
                 context.callGenericPopup(popupHtml, 4, undefined, {
                     large: true,
                     wide: true
                 });
                 
-                // initialize daemon editor after popup is shown
+                // initialize character creator after popup is shown
                 setTimeout(() => {
                     if (typeof InitializeCharacterCreator === 'function') {
                         InitializeCharacterCreator(extensionFolderPath);
@@ -103,15 +86,13 @@
         });
     }
 
-    // get extension prompt for injection into ai (character-specific)
+    // get extension prompt for injection into ai
     function GetExtensionPrompt() {
         if (!context.extensionSettings[extensionName]?.statsEnabled) {
             return '';
         }
         
-        // get stats for current character
-        const currentCharId = String(context.characterId);
-        const characterStats = context.extensionSettings[extensionName]?.activeProfiles?.[currentCharId];
+        const characterStats = context.extensionSettings[extensionName]?.characterStats;
         return characterStats || '';
     }
     
@@ -145,7 +126,7 @@
                 
                 context.saveSettingsDebounced();
                 return '';
-            }, [], '<span class="monospace">on/off/toggle</span> – Toggle D&D Daemon Profile injection into AI prompts', true, true);
+            }, [], '<span class="monospace">on/off/toggle</span> – Toggle D&D character stats injection into AI prompts', true, true);
         }
     }
     
@@ -158,7 +139,7 @@
         await LoadPopupButton();
         SetupPromptInjection();
         
-        console.log('Daemon Tavern initialized successfully');
+        console.log('DaemoTavern initialized successfully');
     }
 
     // register extension
