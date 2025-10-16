@@ -2,3 +2,50 @@
     z-index: 30000;
     backdrop-filter: blur(--SmartThemeBlurStrength);
 }
+
+/* daemo agent popup */
+#daemo_agent_popup {
+    display: none;
+    z-index: 10000;
+}
+
+#daemo_agent_popup .dialogue_popup_block {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* daemo agent sections */
+.daemo_section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.daemo_section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--SmartThemeBodyColor);
+}
+
+/* ability modifiers */
+.daemo_modifier {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* daemo agent buttons */
+.daemo_agent_char_button {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.daemo_agent_char_button:hover {
+    opacity: 0.7;
+}
+
+.daemo_agent_persona_button {
+    margin-left: 10px;
+}
