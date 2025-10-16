@@ -1,4 +1,4 @@
-.daemo_tavern_settings {
+#daemo_tavern_settings {
     z-index: 30000;
     backdrop-filter: blur(--SmartThemeBlurStrength);
 }
