@@ -43,11 +43,33 @@
         $('#extensions_settings2').append(settingsHtml);
     }
 
+    // load popup button
+    async function LoadPopupButton() {
+        const iconHtml = `<div class="menu_button fa-solid fa-dragon interactable daemoTavern-icon" title="Daemo Tavern"></div>`;
+        
+        $('.form_create_bottom_buttons_block').prepend(iconHtml);
+        $('#GroupFavDelOkBack').prepend(iconHtml);
+        $('#form_character_search_form').prepend(iconHtml);
+        
+        const popupIcons = document.querySelectorAll('.daemoTavern-icon');
+        
+        popupIcons.forEach((icon) => {
+            icon.addEventListener('click', async () => {
+                const popupHtml = await $.get(`${extensionFolderPath}/popup.html`);
+                context.callGenericPopup(popupHtml, 4, undefined, {
+                    large: true,
+                    wide: true
+                });
+            });
+        });
+    }
+
     // initialize extension
     async function Init() {
         await LoadSettingsHtml();
         LoadSettings();
         SetupEventHandlers();
+        await LoadPopupButton();
         
         console.log('DaemoTavern initialized successfully');
     }

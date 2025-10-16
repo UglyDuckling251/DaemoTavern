@@ -2,3 +2,24 @@
     z-index: 30000;
     backdrop-filter: blur(--SmartThemeBlurStrength);
 }
+
+/* popup styling */
+.popup-content:has(#daemoTavernPopup) {
+    overflow-y: auto;
+}
+
+#daemoTavernPopup {
+    color: var(--SmartThemeBodyColor);
+    font-family: var(--mainFontFamily);
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: var(--mainFontSize);
+    padding: 20px;
+}
+
+#daemoTavernPopup h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+    color: var(--SmartThemeBodyColor);
+}
