@@ -6,7 +6,7 @@
 
     // extension settings
     const extensionName = 'DaemoTavern';
-    const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
+    const extensionFolderPath = 'scripts/extensions/third-party/Extension-DaemoTavern';
     const defaultSettings = {
         useFunctionTool: false
     };
