@@ -379,65 +379,6 @@ input[type="number"][readonly] {
     font-style: italic;
 }
 
-/* stat badges in chat */
-.daemo-stat-badges {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-left: 10px;
-    flex-wrap: wrap;
-}
-
-.daemo-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    font-weight: 500;
-    background-color: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    white-space: nowrap;
-}
-
-.daemo-badge i {
-    font-size: 0.9em;
-}
-
-.daemo-hp {
-    color: #ff6b6b;
-    border-color: rgba(255, 107, 107, 0.3);
-}
-
-.daemo-hp i {
-    color: #ff6b6b;
-}
-
-.daemo-ac {
-    color: #51cf66;
-    border-color: rgba(81, 207, 102, 0.3);
-}
-
-.daemo-ac i {
-    color: #51cf66;
-}
-
-.daemo-speed {
-    color: #74c0fc;
-    border-color: rgba(116, 192, 252, 0.3);
-}
-
-.daemo-speed i {
-    color: #74c0fc;
-}
-
-.daemo-info {
-    color: #ffd43b;
-    border-color: rgba(255, 212, 59, 0.3);
-    font-style: italic;
-}
-
 /* responsive design */
 @media (max-width: 1200px) {
     .character-sheet-container {
@@ -458,10 +399,5 @@ input[type="number"][readonly] {
     
     .spell-slots-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .daemo-stat-badges {
-        margin-left: 0;
-        margin-top: 5px;
     }
 }

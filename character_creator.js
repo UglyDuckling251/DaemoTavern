@@ -397,6 +397,9 @@ function UpdateSpellcastingSection() {
     // filter spells by class
     PopulateSpellSelectors();
     
+    // update selected spells display
+    UpdateSelectedSpellsDisplay();
+    
     // update token count in real-time
     CalculateTokenCount();
 }
@@ -1027,6 +1030,14 @@ function CalculateTokenCount() {
 // generate character stats as text for ai
 function GenerateStatsText() {
     let text = `# ${characterData.name} - D&D 5e Character Sheet\n\n`;
+    
+    // narrative instructions for AI
+    text += `[IMPORTANT ROLEPLAY INSTRUCTIONS: You are aware of these stats, but you should never state exact numbers when roleplaying. Instead, describe your condition narratively and in-character. For example:\n`;
+    text += `- Don't say "My HP is 3" → Say "I'm badly wounded" or "I'm barely standing"\n`;
+    text += `- Don't say "My AC is 15" → Say "I'm well-armored" or "I'm wearing sturdy protection"\n`;
+    text += `- Don't say "My STR is 18" → Say "I'm quite strong" or "I have great physical prowess"\n`;
+    text += `- Don't say "My level is 5" → Say "I'm experienced" or "I've been adventuring for some time"\n`;
+    text += `Keep these stats in mind for combat mechanics and dice rolls, but always speak naturally as your character would. Never break the fourth wall by mentioning game mechanics unless specifically asked about your character sheet.]\n\n`;
     
     // basic info
     if (characterData.race) text += `**Race:** ${DND_RACES[characterData.race]?.name || characterData.race}\n`;
