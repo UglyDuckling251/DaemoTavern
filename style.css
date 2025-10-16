@@ -3,6 +3,18 @@
     backdrop-filter: blur(--SmartThemeBlurStrength);
 }
 
+/* hide spinners on readonly number inputs */
+input[type="number"][readonly]::-webkit-inner-spin-button,
+input[type="number"][readonly]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"][readonly] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
 /* popup styling */
 .popup-content:has(#daemoTavernPopup) {
     overflow-y: auto;
