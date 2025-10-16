@@ -2,6 +2,7 @@
 
 let characterData = {
     name: '',
+    characterId: '',
     race: '',
     class: '',
     level: 1,
@@ -19,6 +20,7 @@ let characterData = {
 };
 
 let tokenCount = 0;
+let currentCharacterId = null;
 
 let allSpells = [];
 let pointsSpent = 0;
@@ -802,16 +804,27 @@ function InitializeCharacterCreator(extensionFolderPath) {
     UpdateCombatStats();
 }
 
-// save character to storage
+// save daemon profile to storage
 function SaveCharacter() {
     const context = SillyTavern.getContext();
     const extensionName = 'DaemoTavern';
+    
+    if (!currentCharacterId) {
+        toastr.error('No character selected', 'Daemon Tavern');
+        return;
+    }
     
     if (!context.extensionSettings[extensionName]) {
         context.extensionSettings[extensionName] = {};
     }
     
-    context.extensionSettings[extensionName].characterData = JSON.parse(JSON.stringify(characterData));
+    if (!context.extensionSettings[extensionName].daemonProfiles) {
+        context.extensionSettings[extensionName].daemonProfiles = {};
+    }
+    
+    // save profile for this specific character
+    characterData.characterId = currentCharacterId;
+    context.extensionSettings[extensionName].daemonProfiles[currentCharacterId] = JSON.parse(JSON.stringify(characterData));
     context.saveSettingsDebounced();
     
     // inject stats into context for ai
@@ -821,20 +834,26 @@ function SaveCharacter() {
     UpdateCharacterTitle();
     
     // show save confirmation
-    toastr.success('Character saved successfully!', 'Daemo Tavern');
-    console.log('Character saved:', characterData);
+    toastr.success('Daemon Profile saved successfully!', 'Daemon Tavern');
+    console.log('Daemon Profile saved for character:', currentCharacterId, characterData);
 }
 
-// load character from storage
+// load daemon profile from storage
 function LoadCharacter() {
     const context = SillyTavern.getContext();
     const extensionName = 'DaemoTavern';
     
-    if (context.extensionSettings[extensionName]?.characterData) {
-        const savedData = context.extensionSettings[extensionName].characterData;
-        
-        // restore character data
-        Object.assign(characterData, savedData);
+    if (!currentCharacterId) {
+        console.log('No character ID available for loading Daemon Profile');
+        CalculateTokenCount();
+        return;
+    }
+    
+    const savedProfile = context.extensionSettings[extensionName]?.daemonProfiles?.[currentCharacterId];
+    
+    if (savedProfile) {
+        // restore daemon profile data
+        Object.assign(characterData, savedProfile);
         
         // restore ui values
         $('#characterRace').val(characterData.race);
@@ -867,23 +886,70 @@ function LoadCharacter() {
         // calculate token count
         CalculateTokenCount();
         
-        console.log('Character loaded:', characterData);
+        console.log('Daemon Profile loaded for character:', currentCharacterId, characterData);
     } else {
-        // initialize token count even if no saved data
+        // no saved profile for this character - reset to defaults
+        console.log('No saved Daemon Profile for character:', currentCharacterId);
+        ResetToDefaults();
         CalculateTokenCount();
     }
 }
 
-// get character name from sillytavern
+// reset daemon profile to defaults
+function ResetToDefaults() {
+    characterData.race = '';
+    characterData.class = '';
+    characterData.level = 1;
+    characterData.background = '';
+    characterData.alignment = '';
+    characterData.abilityScores = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+    characterData.hp = 0;
+    characterData.ac = 10;
+    characterData.speed = 30;
+    characterData.weapon = '';
+    characterData.armor = '';
+    characterData.instrument = '';
+    characterData.selectedCantrips = [];
+    characterData.selectedSpells = [];
+    
+    // reset ui
+    $('#characterRace').val('');
+    $('#characterClass').val('');
+    $('#characterLevel').val(1);
+    $('#characterBackground').val('');
+    $('#characterAlignment').val('');
+    $('#characterWeapon').val('');
+    $('#characterArmor').val('');
+    $('#characterInstrument').val('');
+    
+    for (let ability in characterData.abilityScores) {
+        $(`#ability${ability.toUpperCase()}`).val(10);
+    }
+    
+    UpdateAbilityScoreDisplays();
+    UpdateCombatStats();
+    UpdateRacialFeatures();
+    UpdateClassFeatures();
+    UpdateSpellcastingSection();
+}
+
+// get character name and id from sillytavern
 function GetCharacterName() {
     const context = SillyTavern.getContext();
     
-    // get active character name
-    if (context.name2) {
-        characterData.name = context.name2;
-    } else if (context.characters && context.characters[context.characterId]) {
-        characterData.name = context.characters[context.characterId].name;
+    // get active character name and id
+    if (context.characterId !== undefined && context.characterId !== null) {
+        currentCharacterId = String(context.characterId);
+        
+        if (context.name2) {
+            characterData.name = context.name2;
+        } else if (context.characters && context.characters[context.characterId]) {
+            characterData.name = context.characters[context.characterId].name;
+        } else {
+            characterData.name = 'Unknown Character';
+        }
     } else {
+        currentCharacterId = null;
         characterData.name = 'No Character Selected';
     }
     
@@ -1012,10 +1078,15 @@ function GenerateStatsText() {
     return text;
 }
 
-// inject character stats into ai context
+// inject daemon profile stats into ai context
 function InjectStatsIntoContext() {
     const context = SillyTavern.getContext();
     const extensionName = 'DaemoTavern';
+    
+    if (!currentCharacterId) {
+        console.log('No character ID - cannot inject Daemon Profile stats');
+        return;
+    }
     
     const statsText = GenerateStatsText();
     
@@ -1024,9 +1095,14 @@ function InjectStatsIntoContext() {
         context.extensionSettings[extensionName] = {};
     }
     
-    context.extensionSettings[extensionName].characterStats = statsText;
+    if (!context.extensionSettings[extensionName].activeProfiles) {
+        context.extensionSettings[extensionName].activeProfiles = {};
+    }
+    
+    // store stats for this character specifically
+    context.extensionSettings[extensionName].activeProfiles[currentCharacterId] = statsText;
     context.extensionSettings[extensionName].statsEnabled = true;
     
-    console.log('Character stats injected into context');
+    console.log('Daemon Profile stats injected for character:', currentCharacterId);
     CalculateTokenCount();
 }
