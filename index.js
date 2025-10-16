@@ -35,14 +35,6 @@
         $('#test').on('change', function() {
             SaveSettings();
         });
-        
-        // listen for character change events
-        context.eventSource.on('character_selected', () => {
-            // auto-load and inject character profile when character changes
-            if (typeof LoadCharacterProfileForAI === 'function') {
-                LoadCharacterProfileForAI();
-            }
-        });
     }
 
     // load settings html
@@ -94,14 +86,46 @@
         });
     }
 
+    // generate stats text from profile data
+    function GenerateStatsTextFromProfile(profile) {
+        // use the GenerateStatsText function from character_creator.js if available
+        if (typeof GenerateStatsText === 'function') {
+            // temporarily set characterData to the profile
+            const originalData = typeof characterData !== 'undefined' ? JSON.parse(JSON.stringify(characterData)) : null;
+            characterData = profile;
+            const text = GenerateStatsText();
+            if (originalData) {
+                characterData = originalData;
+            }
+            return text;
+        }
+        
+        return '';
+    }
+    
     // get extension prompt for injection into ai
     function GetExtensionPrompt() {
         if (!context.extensionSettings[extensionName]?.statsEnabled) {
             return '';
         }
         
-        const characterStats = context.extensionSettings[extensionName]?.characterStats;
-        return characterStats || '';
+        // get current character id
+        const characterId = context.characterId;
+        if (!characterId) {
+            return '';
+        }
+        
+        // build profile key for current character
+        let profileKey = `daemonProfile_char_${characterId}`;
+        
+        // get profile for current character
+        const profile = context.extensionSettings[extensionName]?.profiles?.[profileKey];
+        if (!profile) {
+            return '';
+        }
+        
+        // generate stats text from profile
+        return GenerateStatsTextFromProfile(profile);
     }
     
     // setup prompt injection hook
@@ -146,13 +170,6 @@
         await LoadCharacterCreatorScripts();
         await LoadPopupButton();
         SetupPromptInjection();
-        
-        // auto-load character profile on startup
-        setTimeout(() => {
-            if (typeof LoadCharacterProfileForAI === 'function') {
-                LoadCharacterProfileForAI();
-            }
-        }, 1000);
         
         console.log('DaemoTavern initialized successfully');
     }
