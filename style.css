@@ -256,6 +256,13 @@
     margin-top: 10px;
 }
 
+.spell-help-text {
+    font-size: 0.85em;
+    color: var(--grey70);
+    font-style: italic;
+    margin: 5px 0;
+}
+
 .spell-slot-item {
     padding: 8px;
     background-color: var(--SmartThemeBlurTintColor);
@@ -294,48 +301,33 @@
 }
 
 .selected-spells {
-    margin-top: 15px;
-    padding: 10px;
-    background-color: var(--SmartThemeBlurTintColor);
-    border-radius: 5px;
-    border: 1px solid var(--SmartThemeBorderColor);
-    min-height: 50px;
-    max-height: 300px;
-    overflow-y: auto;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .selected-spell-item {
-    display: flex;
-    justify-content: space-between;
+    display: inline-flex;
     align-items: center;
-    padding: 8px;
-    margin-bottom: 5px;
-    background-color: var(--black30a);
+    gap: 8px;
+    padding: 6px 12px;
+    background-color: var(--SmartThemeBlurTintColor);
+    border: 1px solid var(--SmartThemeBorderColor);
     border-radius: 5px;
+    font-size: 0.9em;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .selected-spell-item:hover {
-    background-color: var(--black50a);
+    background-color: var(--black30a);
+    border-color: var(--SmartThemeQuoteColor);
+    transform: translateY(-1px);
 }
 
 .spell-name {
-    flex: 1;
-}
-
-.remove-spell-btn {
-    background: none;
-    border: none;
-    color: #ff4444;
-    font-size: 1.5em;
-    cursor: pointer;
-    padding: 0 5px;
-    line-height: 1;
-}
-
-.remove-spell-btn:hover {
-    color: #ff0000;
+    color: var(--SmartThemeBodyColor);
 }
 
 /* spell tooltip */

@@ -477,55 +477,45 @@ function PopulateSpellSelector() {
 }
 
 // add cantrip to selected list
-function AddCantrip() {
-    const selector = $('#cantripSelector');
-    const selected = selector.val();
-    
-    if (!selected || selected.length === 0) {
+function AddCantrip(spellName) {
+    if (!spellName) {
         return;
     }
     
     const cantripsKnown = GetCantripsKnown();
     
-    selected.forEach(spellName => {
-        if (characterData.selectedCantrips.length >= cantripsKnown) {
-            alert(`You can only know ${cantripsKnown} cantrips at level ${characterData.level}`);
-            return;
-        }
-        
-        if (!characterData.selectedCantrips.includes(spellName)) {
-            characterData.selectedCantrips.push(spellName);
-        }
-    });
+    if (characterData.selectedCantrips.length >= cantripsKnown) {
+        toastr.warning(`You can only know ${cantripsKnown} cantrips at level ${characterData.level}`, 'Daemon Tavern');
+        return;
+    }
     
-    UpdateSelectedSpellsDisplay();
-    PopulateSpellSelectors();
+    if (!characterData.selectedCantrips.includes(spellName)) {
+        characterData.selectedCantrips.push(spellName);
+        UpdateSelectedSpellsDisplay();
+        PopulateSpellSelectors();
+        CalculateTokenCount();
+    }
 }
 
 // add spell to selected list
-function AddSpell() {
-    const selector = $('#spellSelector');
-    const selected = selector.val();
-    
-    if (!selected || selected.length === 0) {
+function AddSpell(spellName) {
+    if (!spellName) {
         return;
     }
     
     const spellsKnown = GetSpellsKnown();
     
-    selected.forEach(spellName => {
-        if (characterData.selectedSpells.length >= spellsKnown) {
-            alert(`You can only know ${spellsKnown} spells at level ${characterData.level}`);
-            return;
-        }
-        
-        if (!characterData.selectedSpells.includes(spellName)) {
-            characterData.selectedSpells.push(spellName);
-        }
-    });
+    if (characterData.selectedSpells.length >= spellsKnown) {
+        toastr.warning(`You can only know ${spellsKnown} spells at level ${characterData.level}`, 'Daemon Tavern');
+        return;
+    }
     
-    UpdateSelectedSpellsDisplay();
-    PopulateSpellSelector();
+    if (!characterData.selectedSpells.includes(spellName)) {
+        characterData.selectedSpells.push(spellName);
+        UpdateSelectedSpellsDisplay();
+        PopulateSpellSelector();
+        CalculateTokenCount();
+    }
 }
 
 // remove cantrip from selected list
@@ -536,6 +526,7 @@ function RemoveCantrip(spellName) {
     }
     UpdateSelectedSpellsDisplay();
     PopulateSpellSelectors();
+    CalculateTokenCount();
 }
 
 // remove spell from selected list
@@ -546,6 +537,7 @@ function RemoveSpell(spellName) {
     }
     UpdateSelectedSpellsDisplay();
     PopulateSpellSelector();
+    CalculateTokenCount();
 }
 
 // update display of selected spells
@@ -562,9 +554,8 @@ function UpdateSelectedSpellsDisplay() {
     // display selected cantrips
     let cantripsHtml = '';
     characterData.selectedCantrips.forEach(spellName => {
-        cantripsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="cantrip">
+        cantripsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="cantrip" title="Shift-click to remove">
             <span class="spell-name">${spellName}</span>
-            <button class="remove-spell-btn">×</button>
         </div>`;
     });
     cantripsDiv.html(cantripsHtml || '<p class="subtle">No cantrips selected</p>');
@@ -574,9 +565,8 @@ function UpdateSelectedSpellsDisplay() {
     characterData.selectedSpells.forEach(spellName => {
         const spell = allSpells.find(s => s.name === spellName);
         const level = spell ? spell.level : '?';
-        spellsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="spell">
+        spellsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="spell" title="Shift-click to remove">
             <span class="spell-name">${spellName} <small>(Lvl ${level})</small></span>
-            <button class="remove-spell-btn">×</button>
         </div>`;
     });
     spellsDiv.html(spellsHtml || '<p class="subtle">No spells selected</p>');
@@ -774,6 +764,59 @@ async function InitializeCharacterCreator(extensionFolderPath) {
         UpdateAbilityScoreDisplays();
         UpdateCombatStats();
         UpdateSpellcastingSection();
+    });
+    
+    // spell selection - double click to add
+    $('#cantripSelector').on('dblclick', function(e) {
+        const selectedOption = $(this).find('option:selected');
+        if (selectedOption.length > 0) {
+            const spellName = selectedOption.val();
+            AddCantrip(spellName);
+        }
+    });
+    
+    $('#spellSelector').on('dblclick', function(e) {
+        const selectedOption = $(this).find('option:selected');
+        if (selectedOption.length > 0) {
+            const spellName = selectedOption.val();
+            AddSpell(spellName);
+        }
+    });
+    
+    // spell level filter
+    $('#spellLevelFilter').on('change', PopulateSpellSelector);
+    
+    // spell tooltips
+    $(document).on('mouseenter', '#cantripSelector option, #spellSelector option', function(e) {
+        const spellName = $(this).val();
+        ShowSpellTooltip(spellName, e);
+    });
+    
+    $(document).on('mouseleave', '#cantripSelector option, #spellSelector option', function() {
+        HideSpellTooltip();
+    });
+    
+    $(document).on('mouseenter', '.selected-spell-item', function(e) {
+        const spellName = $(this).data('spell');
+        ShowSpellTooltip(spellName, e);
+    });
+    
+    $(document).on('mouseleave', '.selected-spell-item', function() {
+        HideSpellTooltip();
+    });
+    
+    // shift-click to remove selected spells
+    $(document).on('click', '.selected-spell-item', function(e) {
+        if (e.shiftKey) {
+            const spellName = $(this).data('spell');
+            const type = $(this).data('type');
+            
+            if (type === 'cantrip') {
+                RemoveCantrip(spellName);
+            } else if (type === 'spell') {
+                RemoveSpell(spellName);
+            }
+        }
     });
     
     // save character button
@@ -1027,18 +1070,30 @@ function GenerateStatsText() {
         text += '\n';
     }
     
-    // spell slots
-    const spellSlots = GetSpellSlots();
-    if (spellSlots) {
+    // spells
+    if (characterData.selectedCantrips.length > 0 || characterData.selectedSpells.length > 0) {
         text += `## Spellcasting\n`;
-        text += `**Spell Slots:** `;
-        const slots = [];
-        for (let level = 1; level <= 9; level++) {
-            if (spellSlots[level] > 0) {
-                slots.push(`${level}st: ${spellSlots[level]}`);
-            }
+        
+        if (characterData.selectedCantrips.length > 0) {
+            text += `**Cantrips:** ${characterData.selectedCantrips.join(', ')}\n`;
         }
-        text += slots.join(', ') + '\n\n';
+        
+        if (characterData.selectedSpells.length > 0) {
+            text += `**Spells Known:** ${characterData.selectedSpells.join(', ')}\n`;
+        }
+        
+        const spellSlots = GetSpellSlots();
+        if (spellSlots) {
+            text += `**Spell Slots:** `;
+            const slots = [];
+            for (let level = 1; level <= 9; level++) {
+                if (spellSlots[level] > 0) {
+                    slots.push(`${level}st: ${spellSlots[level]}`);
+                }
+            }
+            text += slots.join(', ') + '\n';
+        }
+        text += '\n';
     }
     
     // racial features
