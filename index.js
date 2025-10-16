@@ -35,6 +35,14 @@
         $('#test').on('change', function() {
             SaveSettings();
         });
+        
+        // listen for character change events
+        context.eventSource.on('character_selected', () => {
+            // auto-load and inject character profile when character changes
+            if (typeof LoadCharacterProfileForAI === 'function') {
+                LoadCharacterProfileForAI();
+            }
+        });
     }
 
     // load settings html
@@ -138,6 +146,13 @@
         await LoadCharacterCreatorScripts();
         await LoadPopupButton();
         SetupPromptInjection();
+        
+        // auto-load character profile on startup
+        setTimeout(() => {
+            if (typeof LoadCharacterProfileForAI === 'function') {
+                LoadCharacterProfileForAI();
+            }
+        }, 1000);
         
         console.log('DaemoTavern initialized successfully');
     }

@@ -554,7 +554,7 @@ function UpdateSelectedSpellsDisplay() {
     // display selected cantrips
     let cantripsHtml = '';
     characterData.selectedCantrips.forEach(spellName => {
-        cantripsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="cantrip" title="Shift-click to remove">
+        cantripsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="cantrip" title="Click to remove">
             <span class="spell-name">${spellName}</span>
         </div>`;
     });
@@ -565,7 +565,7 @@ function UpdateSelectedSpellsDisplay() {
     characterData.selectedSpells.forEach(spellName => {
         const spell = allSpells.find(s => s.name === spellName);
         const level = spell ? spell.level : '?';
-        spellsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="spell" title="Shift-click to remove">
+        spellsHtml += `<div class="selected-spell-item" data-spell="${spellName}" data-type="spell" title="Click to remove">
             <span class="spell-name">${spellName} <small>(Lvl ${level})</small></span>
         </div>`;
     });
@@ -805,17 +805,15 @@ async function InitializeCharacterCreator(extensionFolderPath) {
         HideSpellTooltip();
     });
     
-    // shift-click to remove selected spells
+    // click to remove selected spells
     $(document).on('click', '.selected-spell-item', function(e) {
-        if (e.shiftKey) {
-            const spellName = $(this).data('spell');
-            const type = $(this).data('type');
-            
-            if (type === 'cantrip') {
-                RemoveCantrip(spellName);
-            } else if (type === 'spell') {
-                RemoveSpell(spellName);
-            }
+        const spellName = $(this).data('spell');
+        const type = $(this).data('type');
+        
+        if (type === 'cantrip') {
+            RemoveCantrip(spellName);
+        } else if (type === 'spell') {
+            RemoveSpell(spellName);
         }
     });
     
@@ -932,6 +930,9 @@ function LoadCharacter() {
         
         // calculate token count
         CalculateTokenCount();
+        
+        // inject stats into context for ai awareness
+        InjectStatsIntoContext();
         
         console.log('Daemon Profile loaded:', characterData, 'Key:', profileKey);
     } else {
@@ -1140,4 +1141,41 @@ function InjectStatsIntoContext() {
     
     console.log('Character stats injected into context');
     CalculateTokenCount();
+}
+
+// load character profile and inject into ai context (for auto-loading on character switch)
+function LoadCharacterProfileForAI() {
+    const context = SillyTavern.getContext();
+    const extensionName = 'DaemoTavern';
+    
+    // update character name
+    if (context.name2) {
+        characterData.name = context.name2;
+    } else if (context.characters && context.characters[context.characterId]) {
+        characterData.name = context.characters[context.characterId].name;
+    }
+    
+    // get character-specific profile key
+    const charId = context.characterId || context.name2?.replace(/\s+/g, '_').toLowerCase() || 'unknown';
+    const profileKey = `daemonProfile_char_${charId}`;
+    
+    // load profile if it exists
+    if (context.extensionSettings[extensionName]?.profiles?.[profileKey]) {
+        const savedData = context.extensionSettings[extensionName].profiles[profileKey];
+        
+        // update characterData
+        Object.assign(characterData, savedData);
+        
+        // inject into context
+        InjectStatsIntoContext();
+        
+        console.log(`Daemon Profile auto-loaded for ${characterData.name}`);
+    } else {
+        // no profile exists - disable stats injection
+        if (context.extensionSettings[extensionName]) {
+            context.extensionSettings[extensionName].characterStats = '';
+            context.extensionSettings[extensionName].statsEnabled = false;
+        }
+        console.log(`No Daemon Profile found for character. Stats injection disabled.`);
+    }
 }
